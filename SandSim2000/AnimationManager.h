@@ -20,12 +20,14 @@ public:
 private:
 	void initializeDefaultTerrainTexure();
 	void initializeGrassTerrainTextures();
-
+	void TEMP_initializeAgentTexture();
 	
 
 	std::vector<sf::Sprite> spriteMap;
 	sf::Texture defaultTerrainTexture;
 
 	sf::Texture GrassTexture[3];
+
+	sf::Texture TEMP_agentTexture;
 };
 

@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Agent.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
     <ClCompile Include="AssetCRUDManager.cpp" />
     <ClCompile Include="GameState.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="TheGreatWar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Agent.h" />
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="AssetCRUDManager.h" />
     <ClInclude Include="GameState.h" />

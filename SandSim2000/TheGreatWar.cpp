@@ -125,6 +125,18 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
     
     gameState.clearAndInitializeMap();
 
+    Agent testAgent = *gameState.createAgentAt(6, 6);
+
+    sf::Vector2i position = testAgent.getPosition();
+    std::cout << "Agent current position: " << position.x << ", " << position.y << std::endl;
+
+    sf::Vector2i* path = testAgent.findPath(sf::Vector2i(1, 1), gameState.mapSize);
+    for (int i = 0; i < sizeof(*path) / sizeof(sf::Vector2i); i++)
+    {
+        std::cout << path[i].x << ", " << path[i].y << "  -->  ";
+    }
+
+
     std::cout << "initialized game" << std::endl;
 
     while(window->isOpen())

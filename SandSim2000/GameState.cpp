@@ -31,3 +31,11 @@ void GameState::clearAndInitializeMap()
         }
     }
 }
+
+Agent* GameState::createAgentAt(const int& x, const int& y) 
+{
+    std::cout << "Created Agent" << std::endl;
+    Agent* newAgent = new Agent(sf::Vector2i(x, y));
+    Map[x][y].agent = newAgent;
+    return newAgent;
+}
