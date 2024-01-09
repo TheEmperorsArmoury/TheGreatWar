@@ -50,7 +50,7 @@ void AnimationManager::renderTerrainMap(sf::RenderWindow* window, GameState* gam
     sf::Sprite sprite = sf::Sprite();
     GridGenerator gridGenerator;
     int centerOffsetX = window->getSize().x / 2;
-    int OffsetY = 150;
+    int OffsetY = 200;
 
     for (int i = 0; i < gameState->mapSize; i++)
     {

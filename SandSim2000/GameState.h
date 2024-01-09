@@ -1,5 +1,11 @@
 #pragma once
+
+#include <list>
+
+#include "SFML/Graphics.hpp"
+
 #include "MapInfo.h"
+
 class GameState
 {
 public:
@@ -12,5 +18,7 @@ public:
 	static const int mapSize = 12;
 private:
 	MapInfo** Map = nullptr;
+
+	std::list<MapInfo> terrainMap;
 };
 

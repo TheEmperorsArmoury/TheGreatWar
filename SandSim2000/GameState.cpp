@@ -12,6 +12,7 @@ GameState::~GameState()
 
 void GameState::clearAndInitializeMap()
 {
+    terrainMap.clear();
     if (Map != nullptr) {
         for (int i = 0; i < mapSize; ++i) {
             delete[] Map[i];
@@ -19,15 +20,21 @@ void GameState::clearAndInitializeMap()
         }
         delete[] Map;
     }
-    Map = new MapInfo * [mapSize];
-    for (int i = 0; i < mapSize; ++i) {
-        Map[i] = new MapInfo[mapSize];
 
-        for (int j = 0; j < mapSize; ++j) {
-            Map[i][j].z = 1;
-            Map[i][j].height = rand() & 3 - 1;
-            Map[i][j].facing = 0.0f;
-            Map[i][j].terrain = "default";
+    //Fill the sprites
+    Map = new MapInfo* [mapSize];
+    for (int i = 0; i < mapSize; ++i)
+    {
+        Map[i] = new MapInfo[mapSize];
+        for(int j = 0; j < mapSize; ++j)
+        {
+            MapInfo TerrainTile;
+            TerrainTile.z = 1;          TerrainTile.height = rand() % 3;
+            TerrainTile.facing = 0.0f;  TerrainTile.terrain = "default";
+            TerrainTile.position = sf::Vector2f(i, j);
+            terrainMap.push_back(TerrainTile);
+
+            Map[i][j] = terrainMap.back();
         }
     }
 }
