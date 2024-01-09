@@ -11,8 +11,6 @@ constexpr double PI = 3.14159265358979323846;
 const float windowWidth = 800.0f;
 const float windowHeight = 600.0f;
 
-const std::string resourcesPath = "..\\resources\\";
-
 struct MainMenuOptions
 {
     bool mainMenu = true;
