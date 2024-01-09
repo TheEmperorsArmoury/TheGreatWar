@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "GridGenerator.h"
 #include "AssetCRUDManager.h"
+#include "MapInfo.h"
 
 struct ButtonStates {
     bool heightEditor;
@@ -26,13 +27,6 @@ struct ButtonStates {
         closeMap(false),
         addRemoveHeight(false),
         isometricPerspective(false) {}
-};
-
-struct MapInfo {
-    int z;
-    float facing;
-    std::string terrain; 
-    std::string scenery; 
 };
 
 class MapEditor

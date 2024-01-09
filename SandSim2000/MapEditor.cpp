@@ -17,7 +17,11 @@ void MapEditor::createSpriteMap()
     int centerXOffset = 725;
 
     const std::string& terrainType = "default";
+<<<<<<< HEAD
     const std::string filePath = resourcesPath + "images\\Terrain\\" + terrainType + ".png";
+=======
+    const std::string filePath = "A:\\C++\\TheGreatWar\\resources\\images\\Terrain\\" + terrainType + ".png";
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
 
     if (!terrainTexture.loadFromFile(filePath))
     {
@@ -78,13 +82,16 @@ void MapEditor::addSubtractHeight(sf::Event& event)
     sf::Vector2f clickPosition = { static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y) };
     sf::Vector2f isoCoords = gridGen.mouseToIsometric(sf::Vector2i(clickPosition));
     sf::Vector2f clickedCell = gridGen.mouseCellCalc(isoCoords);
-
 }
 
 void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Font& font)
 {
     sf::Texture heightEditorButtonTexture;
+<<<<<<< HEAD
     if (!heightEditorButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\heightEditorButton.png")) {
+=======
+    if (!heightEditorButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\MapEditorImages\\heightEditorButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -92,7 +99,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     heightEditorButtonSprite.setPosition(1685.0f, 200.0f);
 
     sf::Texture terrainEditorButtonTexture;
+<<<<<<< HEAD
     if (!terrainEditorButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\terrainEditorButton.png")) {
+=======
+    if (!terrainEditorButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\MapEditorImages\\terrainEditorButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -100,7 +111,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     terrainEditorButtonSprite.setPosition(1685.0f, 320.0f);
 
     sf::Texture sceneryEditorButtonTexture;
+<<<<<<< HEAD
     if (!sceneryEditorButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\sceneryEditorButton.png")) {
+=======
+    if (!sceneryEditorButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\MapEditorImages\\sceneryEditorButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -108,7 +123,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     sceneryEditorButtonSprite.setPosition(1685.0f, 440.0f);
 
     sf::Texture newMapButtonTexture;
+<<<<<<< HEAD
     if (!newMapButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\newMapButton.png")) {
+=======
+    if (!newMapButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\MapEditorImages\\newMapButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -116,7 +135,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     newMapButtonSprite.setPosition(1685.0f, 560.0f);
 
     sf::Texture saveMapButtonTexture;
+<<<<<<< HEAD
     if (!saveMapButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\saveMapButton.png")) {
+=======
+    if (!saveMapButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\MapEditorImages\\saveMapButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -124,7 +147,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     saveMapButtonSprite.setPosition(1685.0f, 680.0f);
 
     sf::Texture loadMapButtonTexture;
+<<<<<<< HEAD
     if (!loadMapButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\loadMapButton.png")) {
+=======
+    if (!loadMapButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\MapEditorImages\\loadMapButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -132,7 +159,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     loadMapButtonSprite.setPosition(1685.0f, 800.0f);
 
     sf::Texture closeMapButtonTexture;
+<<<<<<< HEAD
     if (!closeMapButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\closeMapButton.png")) {
+=======
+    if (!closeMapButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\MapEditorImages\\closeMapButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load close button texture!" << std::endl;
         return;
     }
@@ -140,7 +171,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     closeMapButtonSprite.setPosition(1685.0f, 920.0f);
 
     sf::Texture rightBackgroundTexture;
+<<<<<<< HEAD
     if (!rightBackgroundTexture.loadFromFile(resourcesPath + "images\\Utilities\\rightMenuBG.png")) {
+=======
+    if (!rightBackgroundTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\rightMenuBG.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -148,7 +183,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     rightBackgroundSprite.setPosition(1580.0f, 0.0f);
 
     sf::Texture bottomBackgroundTexture;
+<<<<<<< HEAD
     if (!bottomBackgroundTexture.loadFromFile(resourcesPath + "images\\Utilities\\bottomMenuBG.png")) {
+=======
+    if (!bottomBackgroundTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\bottomMenuBG.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -156,7 +195,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     bottomBackgroundSprite.setPosition(0.0f, 710.0f);
 
     sf::Texture addHeightButtonTexture;
+<<<<<<< HEAD
     if (!addHeightButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\menuButton.png")) {
+=======
+    if (!addHeightButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\menuButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -164,7 +207,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     addHeightButtonSprite.setPosition(100.0f, 960.0f);
 
     sf::Texture removeHeightButtonTexture;
+<<<<<<< HEAD
     if (!removeHeightButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\menuButton.png")) {
+=======
+    if (!removeHeightButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\menuButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -173,7 +220,11 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
 
 
     sf::Texture backButtonTexture;
+<<<<<<< HEAD
     if (!backButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\menuButton.png")) {
+=======
+    if (!backButtonTexture.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Images\\Utilities\\menuButton.png")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -265,7 +316,11 @@ void MapEditor::run(sf::RenderWindow& window)
     initialiseNewMap();
     createSpriteMap();
     sf::Font font;
+<<<<<<< HEAD
     if (!font.loadFromFile(resourcesPath + "fonts\\WorldAtWar.ttf")) {
+=======
+    if (!font.loadFromFile("A:\\C++\\TheGreatWar\\resources\\Fonts\\WorldAtWar.ttf")) {
+>>>>>>> 42b05533fdf2c04a2d558760a02721f64c44398e
         std::cerr << "Failed to load font!" << std::endl;
         return;
     }
