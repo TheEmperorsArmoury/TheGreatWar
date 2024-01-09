@@ -8,6 +8,8 @@
 
 #include "MapInfo.h"
 
+#define MAX_DEPTH 5
+
 class QuadTree
 {
 public:

@@ -1,5 +1,13 @@
 #include "QuadTree.h"
 
+namespace sf {
+    bool rectContains(const sf::FloatRect rect1, const sf::FloatRect rect2)
+    {
+        return (rect2.getPosition().x >= rect1.getPosition().x) && (rect2.getPosition().x + rect2.getSize().x < rect1.getPosition().x + rect1.getPosition().x) &&
+            (rect2.getPosition().y >= rect1.getPosition().y) && (rect2.getPosition().y + rect2.getSize().y < rect1.getPosition().y + rect1.getPosition().y);
+    }
+}
+
 QuadTree::QuadTree(sf::FloatRect size, unsigned int Depth)
 {
     depth = Depth;
@@ -48,6 +56,23 @@ unsigned int QuadTree::size()
 
 void QuadTree::insert(MapInfo* item, sf::FloatRect itemSize)
 {
+    if(depth + 1 < MAX_DEPTH)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (sf::rectContains(childQuadRect[i], itemSize))
+            {
+                if (!childQuad[i])
+                    childQuad[i] = std::make_shared<QuadTree>(childQuadRect[i], depth + 1);
+                childQuad[i]->insert(item, itemSize);
+                return;
+
+            }
+        }
+    }
+    //if gotten to this point, the item didnt fit in any children
+    //so add it to this quads list of items
+    quadItems.push_back(item);
 }
 
 std::list<MapInfo*> QuadTree::search(sf::FloatRect searchArea)
