@@ -145,6 +145,7 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GridGenerator.cpp" />
     <ClCompile Include="MapEditor.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="TheGreatWar.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +155,7 @@
     <ClInclude Include="GridGenerator.h" />
     <ClInclude Include="MapEditor.h" />
     <ClInclude Include="MapInfo.h" />
+    <ClInclude Include="QuadTree.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TheGreatWar.rc" />
