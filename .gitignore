@@ -41,6 +41,7 @@ Thumbs.db
 
 # Log Files
 *.log
+*.tlog
 
 # Documentation Build Files
 docs/build/
