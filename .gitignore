@@ -21,8 +21,7 @@ x86/
 *.pdb
 *.opendb
 *.idb
-*.db
-*.db-shm
+*.db*
 # Code::Blocks
 *.layout
 
