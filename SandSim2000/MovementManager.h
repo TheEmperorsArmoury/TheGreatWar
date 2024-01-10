@@ -35,8 +35,8 @@ private:
 	void initialiseMapNodes();
 
 	std::vector<sf::Vector2i> tracePath(Node&);
-	std::vector<sf::Vector2i> getNeighboursOf(Node&);
-	double distance(sf::Vector2i&, sf::Vector2i&);
+	std::vector<sf::Vector2i> getNeighboursOf(Node&) const;
+	double distance(sf::Vector2i&, sf::Vector2i&) const;
 
 	Node*** mapNodes;
 	const int mapSize;

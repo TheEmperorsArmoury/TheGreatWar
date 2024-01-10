@@ -111,7 +111,7 @@ std::vector<sf::Vector2i> MovementManager::tracePath(Node& start)
 	return path;
 }
 
-double MovementManager::distance(sf::Vector2i& v, sf::Vector2i& u)
+double MovementManager::distance(sf::Vector2i& v, sf::Vector2i& u) const
 {
 	//Return the square of the Euclidean distance. As long as we only use 
 	//the squared values, we can save on computing the sqrt each time as
