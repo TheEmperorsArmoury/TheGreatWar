@@ -127,7 +127,7 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
     GameState gameState = GameState();
     AnimationManager animationManager = AnimationManager();
     MovementManager movementManager = MovementManager(gameState.mapSize);
-
+    
     gameState.clearAndInitializeMap();
 
     std::cout << "initialized game" << std::endl;
