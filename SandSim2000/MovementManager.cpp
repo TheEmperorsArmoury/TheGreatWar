@@ -1,38 +1,38 @@
 #include "MovementManager.h"
 
-MovementManager::MovementManager(MapInfo** map, const int& newMapSize)
+MovementManager::MovementManager(const int& newMapSize)
 	: mapSize(newMapSize) {
-	initialiseMapCells();
+	initialiseMapNodes();
 }
 
 MovementManager::~MovementManager() {
 
 }
 
-void MovementManager::initialiseMapCells()
+void MovementManager::initialiseMapNodes()
 {
-	mapCells = new Cell**[mapSize];
+	mapNodes = new Node**[mapSize];
 	for (int i = 0; i < mapSize; i++) {
-		mapCells[i] = new Cell*[mapSize];
+		mapNodes[i] = new Node*[mapSize];
 		for (int j = 0; j < mapSize; j++)
-			mapCells[i][j] = nullptr;
+			mapNodes[i][j] = nullptr;
 	}
 }
 
 std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vector2i target)
 {
-	Cell sourceCell(source, distance(source, target));
-	sourceCell.g = 0;
+	Node sourceNode(source, distance(source, target));
+	sourceNode.g = 0;
 
-	mapCells[source.x][source.y] = &sourceCell;
+	mapNodes[source.x][source.y] = &sourceNode;
 
-	std::vector<Cell*> openSet = { &sourceCell };
+	std::vector<Node*> openSet = { &sourceNode };
 
 	while (!openSet.empty())
 	{
 		//Currently linearly searches through whole openSet for least g+h value.
 		//Possible optimisation is to maintain openSet as a sorted list
-		//by binary searching it when adding a new Cell to find its correct position, 
+		//by binary searching it when adding a new Node to find its correct position, 
 		//then we can simply take openSet[0] here every time.
 
 		int current = 0;
@@ -40,32 +40,32 @@ std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vec
 			if (openSet[current]->g + openSet[current]->h > openSet[i]->g + openSet[i]->h)
 				current = i;
 
-		Cell* currentCell = openSet[current];
+		Node* currentNode = openSet[current];
 
-		if (*currentCell == target)
-			return tracePath(*currentCell);
+		if (*currentNode == target)
+			return tracePath(*currentNode);
 
 		openSet.erase(std::next(openSet.begin(), current));
 
-		std::vector<sf::Vector2i> neighbours = getNeighboursOf(*currentCell);
+		std::vector<sf::Vector2i> neighbours = getNeighboursOf(*currentNode);
 
 		for (sf::Vector2i v : neighbours)
 		{
-			if (mapCells[v.x][v.y] == nullptr)
-				mapCells[v.x][v.y] = new Cell(v, distance(target, v));
+			if (mapNodes[v.x][v.y] == nullptr)
+				mapNodes[v.x][v.y] = new Node(v, distance(target, v));
 
-			//TEMP: Currently every cell can access its direct neighbours with a cost of 1
+			//TEMP: Currently every node can access its direct neighbours with a cost of 1
 			//regardless of obstacles or cliffs/cliff-faces. No diagonal movement at all.
 
-			Cell* neighbour = mapCells[v.x][v.y];
-			double temp_g = currentCell->g + 1;
+			Node* neighbour = mapNodes[v.x][v.y];
+			double temp_g = currentNode->g + 1;
 
 			if (temp_g < neighbour->g)
 			{
-				neighbour->pred = currentCell;
+				neighbour->pred = currentNode;
 				neighbour->g = temp_g;
 
-				if (std::find_if(openSet.begin(), openSet.end(), [neigh = neighbour] (Cell* c) { return c == neigh; }) == openSet.end())
+				if (std::find_if(openSet.begin(), openSet.end(), [neigh = neighbour] (Node* c) { return c == neigh; }) == openSet.end())
 					openSet.push_back(neighbour);
 			}
 		}
@@ -75,12 +75,12 @@ std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vec
 	return std::vector<sf::Vector2i>();
 }
 
-std::vector<sf::Vector2i> MovementManager::getNeighboursOf(Cell& cell)
+std::vector<sf::Vector2i> MovementManager::getNeighboursOf(Node& node) const
 {
 	//TEMP: This will need to be changed when the map is a quadtree, 
 	//not a simple cartesian grid
 
-	sf::Vector2i pos = cell.pos;
+	sf::Vector2i pos = node.pos;
 
 	//TODO: Consider inpassable terrain/obstacles
 
@@ -98,11 +98,11 @@ std::vector<sf::Vector2i> MovementManager::getNeighboursOf(Cell& cell)
 	return neighbours;
 }
 
-std::vector<sf::Vector2i> MovementManager::tracePath(Cell& start)
+std::vector<sf::Vector2i> MovementManager::tracePath(Node& start)
 {
 	std::vector<sf::Vector2i> path = { start.pos };
 
-	Cell current = start;
+	Node current = start;
 	while (current.pred != nullptr) {
 		path.insert(path.begin(), current.pred->pos); //Insert at front
 		current = *current.pred;

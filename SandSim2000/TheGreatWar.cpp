@@ -123,24 +123,21 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
 {
     GameState gameState = GameState();
     AnimationManager animationManager = AnimationManager();
-    MovementManager movementManager = MovementManager(gameState.getMapData(), gameState.mapSize);
+    MovementManager movementManager = MovementManager(gameState.mapSize);
     
     gameState.clearAndInitializeMap();
 
     std::cout << "initialized game" << std::endl;
 
-    Agent testAgent = *gameState.createAgentAt(6, 6);
-
-    sf::Vector2i agentPosition = testAgent.getPosition();
-    std::cout << "Agent current position: " << agentPosition.x << ", " << agentPosition.y << std::endl;
+    sf::Vector2i sourcePosition(7, 10);
+    std::cout << "Source position: " << sourcePosition.x << ", " << sourcePosition.y << std::endl;
 
     sf::Vector2i targetPosition(2, 2);
-    std::cout << "Agent target position: " << targetPosition.x << ", " << targetPosition.y << std::endl;
+    std::cout << "Target position: " << targetPosition.x << ", " << targetPosition.y << std::endl;
 
-    std::vector<sf::Vector2i> path = movementManager.findPath(agentPosition, targetPosition);
+    std::vector<sf::Vector2i> path = movementManager.findPath(sourcePosition, targetPosition);
     if (!path.empty()) {
         std::cout << "Path found: " << std::endl;
-
         for (sf::Vector2i v : path)
             if (v == path.front())
                 std::cout << v.x << "," << v.y;

@@ -9,10 +9,10 @@
 build/
 bin/
 
-[Dd]ebug/
-[Rr]elease/
-x64/
-x86/
+*[Dd]ebug/
+*[Rr]elease/
+*x64/
+*x86/
 
 # IDE/Editor Specific Files
 # Visual Studio

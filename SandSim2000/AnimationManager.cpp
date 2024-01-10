@@ -4,7 +4,6 @@ AnimationManager::AnimationManager()
 {
     initializeDefaultTerrainTexure();
     initializeGrassTerrainTextures();
-    TEMP_initializeAgentTexture();
 }
 
 AnimationManager::~AnimationManager()
@@ -32,16 +31,6 @@ void AnimationManager::initializeGrassTerrainTextures()
             std::cerr << "[TEXTURE][GRASS][FAILURE] File Path: " << filePath << std::endl;
             return;
         }
-    }
-}
-void AnimationManager::TEMP_initializeAgentTexture()
-{
-    const std::string filePath = "../resources/images/Terrain/selected.png";
-
-    if (!TEMP_agentTexture.loadFromFile(filePath))
-    {
-        std::cerr << "Failed to load TEMP_agent (selected.png) texture from file: " << filePath << std::endl;
-        return;
     }
 }
 
@@ -83,17 +72,8 @@ void AnimationManager::renderTerrainMap(sf::RenderWindow* window, GameState* gam
             sprite.setPosition(isometricPosition);
 
             // Culling
-            if (viewBounds.intersects(sprite.getGlobalBounds())) {
+            if (viewBounds.intersects(sprite.getGlobalBounds()))
                 window->draw(sprite);
-
-                //TEMP: Draw an agent here if tile contains one
-                if (gameState->getMapData()[i][j].agent != nullptr) {
-                    sf::Sprite agentSprite = sf::Sprite();
-                    agentSprite.setTexture(TEMP_agentTexture);
-                    agentSprite.setPosition(isometricPosition);
-                    window->draw(agentSprite);
-                }
-            }
         }
     }
 }
