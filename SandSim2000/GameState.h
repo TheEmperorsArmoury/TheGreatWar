@@ -1,5 +1,6 @@
 #pragma once
 #include "MapInfo.h"
+
 class GameState
 {
 public:

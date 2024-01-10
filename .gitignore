@@ -3,6 +3,7 @@
 *.so
 *.exe
 *.dll
+*.obj
 
 # Build Directories
 build/
@@ -40,6 +41,7 @@ Thumbs.db
 
 # Log Files
 *.log
+*.tlog
 
 # Documentation Build Files
 docs/build/

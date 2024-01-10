@@ -9,6 +9,7 @@
 
 #include "GameState.h"
 #include "AnimationManager.h"
+#include "MovementManager.h"
 
 constexpr double PI = 3.14159265358979323846;
 const float windowWidth = 800.0f;
@@ -125,10 +126,27 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
 {
     GameState gameState = GameState();
     AnimationManager animationManager = AnimationManager();
+    MovementManager movementManager = MovementManager(gameState.mapSize);
     
     gameState.clearAndInitializeMap();
 
     std::cout << "initialized game" << std::endl;
+
+    sf::Vector2i sourcePosition(7, 10);
+    std::cout << "Source position: " << sourcePosition.x << ", " << sourcePosition.y << std::endl;
+
+    sf::Vector2i targetPosition(2, 2);
+    std::cout << "Target position: " << targetPosition.x << ", " << targetPosition.y << std::endl;
+
+    std::vector<sf::Vector2i> path = movementManager.findPath(sourcePosition, targetPosition);
+    if (!path.empty()) {
+        std::cout << "Path found: " << std::endl;
+        for (sf::Vector2i v : path)
+            if (v == path.front())
+                std::cout << v.x << "," << v.y;
+            else
+                std::cout << " -> " << v.x << "," << v.y;
+    }
 
     while(window->isOpen())
     {

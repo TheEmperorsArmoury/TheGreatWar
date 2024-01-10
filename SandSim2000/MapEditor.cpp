@@ -3,8 +3,6 @@
 #include <string>
 #include <map>
 
-const std::string resourcesPath = "..\\resources\\";
-
 MapEditor::MapEditor()
     : Map(nullptr) {
 }
@@ -17,7 +15,7 @@ void MapEditor::createSpriteMap()
     int centerXOffset = 725;
 
     const std::string& terrainType = "default";
-    const std::string filePath = resourcesPath + "images\\Terrain\\" + terrainType + ".png";
+    const std::string filePath = "..\\resources\\images\\Terrain\\" + terrainType + ".png";
 
     if (!terrainTexture.loadFromFile(filePath))
     {
@@ -83,7 +81,7 @@ void MapEditor::addSubtractHeight(sf::Event& event)
 void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Font& font)
 {
     sf::Texture heightEditorButtonTexture;
-    if (!heightEditorButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\heightEditorButton.png")) {
+    if (!heightEditorButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\MapEditorImages\\heightEditorButton.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -91,7 +89,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     heightEditorButtonSprite.setPosition(1685.0f, 200.0f);
 
     sf::Texture terrainEditorButtonTexture;
-    if (!terrainEditorButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\terrainEditorButton.png")) {
+    if (!terrainEditorButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\MapEditorImages\\terrainEditorButton.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -99,7 +97,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     terrainEditorButtonSprite.setPosition(1685.0f, 320.0f);
 
     sf::Texture sceneryEditorButtonTexture;
-    if (!sceneryEditorButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\sceneryEditorButton.png")) {
+    if (!sceneryEditorButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\MapEditorImages\\sceneryEditorButton.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -107,7 +105,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     sceneryEditorButtonSprite.setPosition(1685.0f, 440.0f);
 
     sf::Texture newMapButtonTexture;
-    if (!newMapButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\newMapButton.png")) {
+    if (!newMapButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\MapEditorImages\\newMapButton.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -115,7 +113,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     newMapButtonSprite.setPosition(1685.0f, 560.0f);
 
     sf::Texture saveMapButtonTexture;
-    if (!saveMapButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\saveMapButton.png")) {
+    if (!saveMapButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\MapEditorImages\\saveMapButton.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -123,7 +121,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     saveMapButtonSprite.setPosition(1685.0f, 680.0f);
 
     sf::Texture loadMapButtonTexture;
-    if (!loadMapButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\loadMapButton.png")) {
+    if (!loadMapButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\MapEditorImages\\loadMapButton.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -131,7 +129,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     loadMapButtonSprite.setPosition(1685.0f, 800.0f);
 
     sf::Texture closeMapButtonTexture;
-    if (!closeMapButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\MapEditorImages\\closeMapButton.png")) {
+    if (!closeMapButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\MapEditorImages\\closeMapButton.png")) {
         std::cerr << "Failed to load close button texture!" << std::endl;
         return;
     }
@@ -139,7 +137,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     closeMapButtonSprite.setPosition(1685.0f, 920.0f);
 
     sf::Texture rightBackgroundTexture;
-    if (!rightBackgroundTexture.loadFromFile(resourcesPath + "images\\Utilities\\rightMenuBG.png")) {
+    if (!rightBackgroundTexture.loadFromFile("..\\resources\\images\\Utilities\\rightMenuBG.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -147,7 +145,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     rightBackgroundSprite.setPosition(1580.0f, 0.0f);
 
     sf::Texture bottomBackgroundTexture;
-    if (!bottomBackgroundTexture.loadFromFile(resourcesPath + "images\\Utilities\\bottomMenuBG.png")) {
+    if (!bottomBackgroundTexture.loadFromFile("..\\resources\\images\\Utilities\\bottomMenuBG.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -155,7 +153,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     bottomBackgroundSprite.setPosition(0.0f, 710.0f);
 
     sf::Texture addHeightButtonTexture;
-    if (!addHeightButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\menuButton.png")) {
+    if (!addHeightButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\menuButton.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -163,7 +161,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
     addHeightButtonSprite.setPosition(100.0f, 960.0f);
 
     sf::Texture removeHeightButtonTexture;
-    if (!removeHeightButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\menuButton.png")) {
+    if (!removeHeightButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\menuButton.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -172,7 +170,7 @@ void MapEditor::buttonHandler(sf::RenderWindow& window, sf::Event& event, sf::Fo
 
 
     sf::Texture backButtonTexture;
-    if (!backButtonTexture.loadFromFile(resourcesPath + "images\\Utilities\\menuButton.png")) {
+    if (!backButtonTexture.loadFromFile("..\\resources\\images\\Utilities\\menuButton.png")) {
         std::cerr << "Failed to load button texture!" << std::endl;
         return;
     }
@@ -264,7 +262,7 @@ void MapEditor::run(sf::RenderWindow& window)
     initialiseNewMap();
     createSpriteMap();
     sf::Font font;
-    if (!font.loadFromFile(resourcesPath + "fonts\\WorldAtWar.ttf")) {
+    if (!font.loadFromFile("..\\resources\\fonts\\WorldAtWar.ttf")) {
         std::cerr << "Failed to load font!" << std::endl;
         return;
     }

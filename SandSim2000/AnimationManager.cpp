@@ -34,7 +34,6 @@ void AnimationManager::initializeGrassTerrainTextures()
     }
 }
 
-
 void AnimationManager::renderSpriteMap(sf::RenderWindow* window)
 {
     for (const sf::Sprite& sprite : spriteMap) {
@@ -73,7 +72,7 @@ void AnimationManager::renderTerrainMap(sf::RenderWindow* window, GameState* gam
             sprite.setPosition(isometricPosition);
 
             // Culling
-            if(viewBounds.intersects(sprite.getGlobalBounds()))
+            if (viewBounds.intersects(sprite.getGlobalBounds()))
                 window->draw(sprite);
         }
     }
