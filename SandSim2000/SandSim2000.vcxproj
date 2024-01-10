@@ -140,20 +140,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Agent.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
     <ClCompile Include="AssetCRUDManager.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GridGenerator.cpp" />
+    <ClCompile Include="InfantryAndCavalryAgent.cpp" />
     <ClCompile Include="MapEditor.cpp" />
     <ClCompile Include="TheGreatWar.cpp" />
+    <ClCompile Include="VehicleAgent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Agent.h" />
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="AssetCRUDManager.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GridGenerator.h" />
+    <ClInclude Include="InfantryAndCavalryAgent.h" />
     <ClInclude Include="MapEditor.h" />
     <ClInclude Include="MapInfo.h" />
+    <ClInclude Include="VehicleAgent.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TheGreatWar.rc" />

@@ -2,6 +2,9 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "MapEditor.h"
+#include "Agent.h"
+#include "VehicleAgent.h"
+#include "InfantryAndCavalryAgent.h"
 #include <string>
 
 #include "GameState.h"
@@ -172,4 +175,3 @@ int main() {
     }
     return 0;
 }
-
