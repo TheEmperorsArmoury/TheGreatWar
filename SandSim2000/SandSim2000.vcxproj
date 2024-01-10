@@ -147,6 +147,7 @@
     <ClCompile Include="GridGenerator.cpp" />
     <ClCompile Include="InfantryAndCavalryAgent.cpp" />
     <ClCompile Include="MapEditor.cpp" />
+    <ClCompile Include="MovementManager.cpp" />
     <ClCompile Include="TheGreatWar.cpp" />
     <ClCompile Include="VehicleAgent.cpp" />
   </ItemGroup>
@@ -159,6 +160,7 @@
     <ClInclude Include="InfantryAndCavalryAgent.h" />
     <ClInclude Include="MapEditor.h" />
     <ClInclude Include="MapInfo.h" />
+    <ClInclude Include="MovementManager.h" />
     <ClInclude Include="VehicleAgent.h" />
   </ItemGroup>
   <ItemGroup>
