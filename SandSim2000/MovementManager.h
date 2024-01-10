@@ -2,7 +2,6 @@
 #include <SFML/System.hpp>
 #include <vector>
 #include <iostream>
-#include <map>
 #include "MapInfo.h"
 struct Cell
 {

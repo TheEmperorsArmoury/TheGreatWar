@@ -3,6 +3,7 @@
 *.so
 *.exe
 *.dll
+*.obj
 
 # Build Directories
 build/
@@ -19,6 +20,9 @@ x86/
 *.user
 *.pdb
 *.opendb
+*.idb
+*.db
+*.db-shm
 # Code::Blocks
 *.layout
 
@@ -40,6 +44,7 @@ Thumbs.db
 
 # Log Files
 *.log
+*.tlog
 
 # Documentation Build Files
 docs/build/
