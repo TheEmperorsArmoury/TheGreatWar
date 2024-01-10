@@ -6,6 +6,7 @@
 
 #include "GameState.h"
 #include "AnimationManager.h"
+#include "MovementManager.h"
 
 constexpr double PI = 3.14159265358979323846;
 const float windowWidth = 800.0f;
@@ -122,22 +123,31 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
 {
     GameState gameState = GameState();
     AnimationManager animationManager = AnimationManager();
+    MovementManager movementManager = MovementManager(gameState.getMapData(), gameState.mapSize);
     
     gameState.clearAndInitializeMap();
 
+    std::cout << "initialized game" << std::endl;
+
     Agent testAgent = *gameState.createAgentAt(6, 6);
 
-    sf::Vector2i position = testAgent.getPosition();
-    std::cout << "Agent current position: " << position.x << ", " << position.y << std::endl;
+    sf::Vector2i agentPosition = testAgent.getPosition();
+    std::cout << "Agent current position: " << agentPosition.x << ", " << agentPosition.y << std::endl;
 
-    sf::Vector2i* path = testAgent.findPath(sf::Vector2i(1, 1), gameState.mapSize);
-    for (int i = 0; i < sizeof(*path) / sizeof(sf::Vector2i); i++)
-    {
-        std::cout << path[i].x << ", " << path[i].y << "  -->  ";
+    sf::Vector2i targetPosition(2, 2);
+    std::cout << "Agent target position: " << targetPosition.x << ", " << targetPosition.y << std::endl;
+
+    std::vector<sf::Vector2i> path = movementManager.findPath(agentPosition, targetPosition);
+    if (!path.empty()) {
+        std::cout << "Path found: " << std::endl;
+
+        for (sf::Vector2i v : path)
+            if (v == path.front())
+                std::cout << v.x << "," << v.y;
+            else
+                std::cout << " -> " << v.x << "," << v.y;
     }
 
-
-    std::cout << "initialized game" << std::endl;
 
     while(window->isOpen())
     {
@@ -160,7 +170,7 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
 
 int main() {
     sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window(sf::VideoMode(desktopMode.width, desktopMode.height), "The Great War", sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode(desktopMode.width, desktopMode.height), "The Great War", sf::Style::Default);
     setInitialCursorIcon(window);
 
     MainMenuOptions options;
