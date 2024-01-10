@@ -1,7 +1,5 @@
 #pragma once
 #include <SFML/System.hpp>
-#include <vector>
-#include <iostream>
 
 class Agent 
 {

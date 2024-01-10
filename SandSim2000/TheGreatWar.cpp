@@ -148,7 +148,6 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
                 std::cout << " -> " << v.x << "," << v.y;
     }
 
-
     while(window->isOpen())
     {
         sf::Event e;
@@ -170,7 +169,7 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
 
 int main() {
     sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window(sf::VideoMode(desktopMode.width, desktopMode.height), "The Great War", sf::Style::Default);
+    sf::RenderWindow window(sf::VideoMode(desktopMode.width, desktopMode.height), "The Great War", sf::Style::Fullscreen);
     setInitialCursorIcon(window);
 
     MainMenuOptions options;
