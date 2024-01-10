@@ -118,8 +118,8 @@ double MovementManager::distance(sf::Vector2i& v, sf::Vector2i& u) const
 	//x^2 > y^2 implies that x > y for positive numbers x and y.
 	return (v.x - u.x) * (v.x - u.x) + (v.y - u.y) * (v.y - u.y);
 
-	return std::sqrt(
+	/*return std::sqrt(
 		(v.x - u.x) * (v.x - u.x) +
 		(v.y - u.y) * (v.y - u.y)
-	);
+	);*/
 }
