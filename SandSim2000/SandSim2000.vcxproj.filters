@@ -36,13 +36,17 @@
     <ClCompile Include="Agent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VehicleAgent.cpp">
+    <ClCompile Include="MovementManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InfantryAndCavalryAgent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="MovementManager.cpp">
+=======
+    <ClCompile Include="VehicleAgent.cpp">
+>>>>>>> 3ecd182e13031af5e096d0093110f7e493e0923e
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,13 +72,17 @@
     <ClInclude Include="Agent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VehicleAgent.h">
+    <ClInclude Include="MovementManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InfantryAndCavalryAgent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="MovementManager.h">
+=======
+    <ClInclude Include="VehicleAgent.h">
+>>>>>>> 3ecd182e13031af5e096d0093110f7e493e0923e
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

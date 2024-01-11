@@ -6,7 +6,6 @@
 #include "VehicleAgent.h"
 #include "InfantryAndCavalryAgent.h"
 #include <string>
-
 #include "GameState.h"
 #include "AnimationManager.h"
 #include "MovementManager.h"
