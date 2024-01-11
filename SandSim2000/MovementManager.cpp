@@ -2,14 +2,14 @@
 
 MovementManager::MovementManager(const int& newMapSize)
 	: mapSize(newMapSize) {
-	initialiseMapNodes();
+	clearAndInitialiseMapNodes();
 }
 
 MovementManager::~MovementManager() {
 
 }
 
-void MovementManager::initialiseMapNodes()
+void MovementManager::clearAndInitialiseMapNodes()
 {
 	mapNodes = new Node**[mapSize];
 	for (int i = 0; i < mapSize; i++) {
@@ -37,8 +37,10 @@ std::vector<sf::Vector2i> MovementManager::AStarPathFind(sf::Vector2i source, sf
 
 		Node* currentNode = openSet[current];
 
-		if (*currentNode == target)
+		if (*currentNode == target) {
+			clearAndInitialiseMapNodes();
 			return retracePath(*currentNode);
+		}
 
 		openSet.erase(std::next(openSet.begin(), current));
 
@@ -63,6 +65,7 @@ std::vector<sf::Vector2i> MovementManager::AStarPathFind(sf::Vector2i source, sf
 		}
 	}
 
+	clearAndInitialiseMapNodes();
 	return std::vector<sf::Vector2i>();
 }
 

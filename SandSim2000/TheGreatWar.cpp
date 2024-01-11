@@ -121,17 +121,8 @@ void setInitialCursorIcon(sf::RenderWindow& window)
     window.setMouseCursor(cursor);
 }
 
-
-void TemporaryPlayFunction(sf::RenderWindow* window)
+void TemporaryTestPathfinding(MovementManager movementManager)
 {
-    GameState gameState = GameState();
-    AnimationManager animationManager = AnimationManager();
-    MovementManager movementManager = MovementManager(gameState.mapSize);
-    
-    gameState.clearAndInitializeMap();
-
-    std::cout << "initialized game" << std::endl;
-
     sf::Vector2i sourcePosition(7, 10);
     std::cout << "Source position: " << sourcePosition.x << ", " << sourcePosition.y << std::endl;
 
@@ -148,7 +139,36 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
                 std::cout << " -> " << v.x << "," << v.y;
     }
 
-    while(window->isOpen())
+    sourcePosition = sf::Vector2i(3, 4);
+    std::cout << "Source position: " << sourcePosition.x << ", " << sourcePosition.y << std::endl;
+
+    targetPosition = sf::Vector2i(11, 10);
+    std::cout << "Target position: " << targetPosition.x << ", " << targetPosition.y << std::endl;
+
+    path = movementManager.AStarPathFind(sourcePosition, targetPosition);
+    if (!path.empty()) {
+        std::cout << "Path found: " << std::endl;
+        for (sf::Vector2i v : path)
+            if (v == path.front())
+                std::cout << v.x << "," << v.y;
+            else
+                std::cout << " -> " << v.x << "," << v.y;
+    }
+}
+
+void TemporaryPlayFunction(sf::RenderWindow* window)
+{
+    GameState gameState = GameState();
+    AnimationManager animationManager = AnimationManager();
+    MovementManager movementManager = MovementManager(gameState.mapSize);
+
+    gameState.clearAndInitializeMap();
+
+    std::cout << "initialized game" << std::endl;
+
+    TemporaryTestPathfinding(movementManager);
+
+    while (window->isOpen())
     {
         sf::Event e;
 

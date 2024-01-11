@@ -32,7 +32,7 @@ public:
 
 	std::vector<sf::Vector2i> AStarPathFind(sf::Vector2i, sf::Vector2i);
 private:
-	void initialiseMapNodes();
+	void clearAndInitialiseMapNodes();
 
 	std::vector<sf::Vector2i> retracePath(Node&);
 	std::vector<sf::Vector2i> getNeighboursOf(Node&) const;
