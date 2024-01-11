@@ -138,7 +138,7 @@ void TemporaryPlayFunction(sf::RenderWindow* window)
     sf::Vector2i targetPosition(2, 2);
     std::cout << "Target position: " << targetPosition.x << ", " << targetPosition.y << std::endl;
 
-    std::vector<sf::Vector2i> path = movementManager.findPath(sourcePosition, targetPosition);
+    std::vector<sf::Vector2i> path = movementManager.AStarPathFind(sourcePosition, targetPosition);
     if (!path.empty()) {
         std::cout << "Path found: " << std::endl;
         for (sf::Vector2i v : path)

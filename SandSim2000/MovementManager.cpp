@@ -19,9 +19,9 @@ void MovementManager::initialiseMapNodes()
 	}
 }
 
-std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vector2i target)
+std::vector<sf::Vector2i> MovementManager::AStarPathFind(sf::Vector2i source, sf::Vector2i target)
 {
-	Node sourceNode(source, distance(source, target));
+	Node sourceNode(source, euclideanDistance(source, target));
 	sourceNode.g = 0;
 
 	mapNodes[source.x][source.y] = &sourceNode;
@@ -43,7 +43,7 @@ std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vec
 		Node* currentNode = openSet[current];
 
 		if (*currentNode == target)
-			return tracePath(*currentNode);
+			return retracePath(*currentNode);
 
 		openSet.erase(std::next(openSet.begin(), current));
 
@@ -52,7 +52,7 @@ std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vec
 		for (sf::Vector2i v : neighbours)
 		{
 			if (mapNodes[v.x][v.y] == nullptr)
-				mapNodes[v.x][v.y] = new Node(v, distance(target, v));
+				mapNodes[v.x][v.y] = new Node(v, euclideanDistance(target, v));
 
 			//TEMP: Currently every node can access its direct neighbours with a cost of 1
 			//regardless of obstacles or cliffs/cliff-faces. No diagonal movement at all.
@@ -98,7 +98,7 @@ std::vector<sf::Vector2i> MovementManager::getNeighboursOf(Node& node) const
 	return neighbours;
 }
 
-std::vector<sf::Vector2i> MovementManager::tracePath(Node& start)
+std::vector<sf::Vector2i> MovementManager::retracePath(Node& start)
 {
 	std::vector<sf::Vector2i> path = { start.pos };
 
@@ -111,7 +111,7 @@ std::vector<sf::Vector2i> MovementManager::tracePath(Node& start)
 	return path;
 }
 
-double MovementManager::distance(sf::Vector2i& v, sf::Vector2i& u) const
+double MovementManager::euclideanDistance(sf::Vector2i& v, sf::Vector2i& u) const
 {
 	//Return the square of the Euclidean distance. As long as we only use 
 	//the squared values, we can save on computing the sqrt each time as
