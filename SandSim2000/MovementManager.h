@@ -30,13 +30,13 @@ public:
 	MovementManager(const int&);
 	~MovementManager();
 
-	std::vector<sf::Vector2i> findPath(sf::Vector2i, sf::Vector2i);
+	std::vector<sf::Vector2i> AStarPathFind(sf::Vector2i, sf::Vector2i);
 private:
-	void initialiseMapNodes();
+	void clearAndInitialiseMapNodes();
 
-	std::vector<sf::Vector2i> tracePath(Node&);
+	std::vector<sf::Vector2i> retracePath(Node&);
 	std::vector<sf::Vector2i> getNeighboursOf(Node&) const;
-	double distance(sf::Vector2i&, sf::Vector2i&) const;
+	double euclideanDistance(sf::Vector2i&, sf::Vector2i&) const;
 
 	Node*** mapNodes;
 	const int mapSize;

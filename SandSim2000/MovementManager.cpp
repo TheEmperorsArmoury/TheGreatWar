@@ -2,14 +2,14 @@
 
 MovementManager::MovementManager(const int& newMapSize)
 	: mapSize(newMapSize) {
-	initialiseMapNodes();
+	clearAndInitialiseMapNodes();
 }
 
 MovementManager::~MovementManager() {
 
 }
 
-void MovementManager::initialiseMapNodes()
+void MovementManager::clearAndInitialiseMapNodes()
 {
 	mapNodes = new Node**[mapSize];
 	for (int i = 0; i < mapSize; i++) {
@@ -19,9 +19,9 @@ void MovementManager::initialiseMapNodes()
 	}
 }
 
-std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vector2i target)
+std::vector<sf::Vector2i> MovementManager::AStarPathFind(sf::Vector2i source, sf::Vector2i target)
 {
-	Node sourceNode(source, distance(source, target));
+	Node sourceNode(source, euclideanDistance(source, target));
 	sourceNode.g = 0;
 
 	mapNodes[source.x][source.y] = &sourceNode;
@@ -30,11 +30,6 @@ std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vec
 
 	while (!openSet.empty())
 	{
-		//Currently linearly searches through whole openSet for least g+h value.
-		//Possible optimisation is to maintain openSet as a sorted list
-		//by binary searching it when adding a new Node to find its correct position, 
-		//then we can simply take openSet[0] here every time.
-
 		int current = 0;
 		for (int i = 1; i < openSet.size(); i++)
 			if (openSet[current]->g + openSet[current]->h > openSet[i]->g + openSet[i]->h)
@@ -42,8 +37,10 @@ std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vec
 
 		Node* currentNode = openSet[current];
 
-		if (*currentNode == target)
-			return tracePath(*currentNode);
+		if (*currentNode == target) {
+			clearAndInitialiseMapNodes();
+			return retracePath(*currentNode);
+		}
 
 		openSet.erase(std::next(openSet.begin(), current));
 
@@ -52,10 +49,7 @@ std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vec
 		for (sf::Vector2i v : neighbours)
 		{
 			if (mapNodes[v.x][v.y] == nullptr)
-				mapNodes[v.x][v.y] = new Node(v, distance(target, v));
-
-			//TEMP: Currently every node can access its direct neighbours with a cost of 1
-			//regardless of obstacles or cliffs/cliff-faces. No diagonal movement at all.
+				mapNodes[v.x][v.y] = new Node(v, euclideanDistance(target, v));
 
 			Node* neighbour = mapNodes[v.x][v.y];
 			double temp_g = currentNode->g + 1;
@@ -71,18 +65,13 @@ std::vector<sf::Vector2i> MovementManager::findPath(sf::Vector2i source, sf::Vec
 		}
 	}
 
-	//In case of failure, return an empty path
+	clearAndInitialiseMapNodes();
 	return std::vector<sf::Vector2i>();
 }
 
 std::vector<sf::Vector2i> MovementManager::getNeighboursOf(Node& node) const
 {
-	//TEMP: This will need to be changed when the map is a quadtree, 
-	//not a simple cartesian grid
-
 	sf::Vector2i pos = node.pos;
-
-	//TODO: Consider inpassable terrain/obstacles
 
 	std::vector<sf::Vector2i> neighbours = std::vector<sf::Vector2i>();
 
@@ -98,28 +87,20 @@ std::vector<sf::Vector2i> MovementManager::getNeighboursOf(Node& node) const
 	return neighbours;
 }
 
-std::vector<sf::Vector2i> MovementManager::tracePath(Node& start)
+std::vector<sf::Vector2i> MovementManager::retracePath(Node& start)
 {
 	std::vector<sf::Vector2i> path = { start.pos };
 
 	Node current = start;
 	while (current.pred != nullptr) {
-		path.insert(path.begin(), current.pred->pos); //Insert at front
+		path.insert(path.begin(), current.pred->pos);
 		current = *current.pred;
 	}
 
 	return path;
 }
 
-double MovementManager::distance(sf::Vector2i& v, sf::Vector2i& u) const
+double MovementManager::euclideanDistance(sf::Vector2i& v, sf::Vector2i& u) const
 {
-	//Return the square of the Euclidean distance. As long as we only use 
-	//the squared values, we can save on computing the sqrt each time as
-	//x^2 > y^2 implies that x > y for positive numbers x and y.
 	return (v.x - u.x) * (v.x - u.x) + (v.y - u.y) * (v.y - u.y);
-
-	/*return std::sqrt(
-		(v.x - u.x) * (v.x - u.x) +
-		(v.y - u.y) * (v.y - u.y)
-	);*/
 }
