@@ -77,14 +77,60 @@ void QuadTree::insert(MapInfo* item, sf::FloatRect itemSize)
 
 std::list<MapInfo*> QuadTree::search(sf::FloatRect searchArea)
 {
-    return std::list<MapInfo*>();
+    std::list<MapInfo*> listItems;
+    searchQuad(searchArea, &listItems);
+    return listItems;
 }
 
-void QuadTree::searchQuad(sf::FloatRect searchArea, std::list<MapInfo*> coveredItems)
+void QuadTree::searchQuad(sf::FloatRect searchArea, std::list<MapInfo*>* coveredItems)
 {
+    for (int i = 0; i < quadItems.size(); i++)
+    {
+        if (searchArea.intersects(quadItems[i]->rect))
+            coveredItems->push_back(quadItems[i]);
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        if (childQuad[i])
+        {
+            if (sf::rectContains(searchArea, childQuadRect[i]))
+                childQuad[i]->items(coveredItems);
+
+            else if (childQuadRect[i].intersects(quadRect))
+                childQuad[i]->searchQuad(searchArea, coveredItems);
+                
+        }
+    }
+}
+
+void QuadTree::items(std::list<MapInfo*>* listItems)
+{
+    // Chuck all this quad items in the list
+    for (int i = 0; i < quadItems.size(); i++)
+        listItems->push_back(quadItems[i]);
+
+    // Chuck all the child quad items in the list
+    for (int i = 0; i < 4; i++)
+    {
+        if (childQuad[i])
+            childQuad[i]->items(listItems);
+    }
 }
 
 std::list<MapInfo*> QuadTree::items()
 {
-    return std::list<MapInfo*>();
+    std::list<MapInfo*> listItems;
+    items(&listItems);
+    return listItems;
+}
+
+// Will draw the rect
+void QuadTree::debugDraw(sf::RenderWindow* window)
+{
+    sf::RectangleShape square(quadRect.getPosition());
+    square.setOutlineColor(sf::Color::White);
+    square.setScale(quadRect.getSize());
+
+    window->draw(square);
 }

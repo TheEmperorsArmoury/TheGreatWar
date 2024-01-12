@@ -5,6 +5,8 @@
 #include <list>
 
 #include "SFML/Graphics/Rect.hpp"
+//just for testing quadtree for now
+#include "SFML/Graphics.hpp"
 
 #include "MapInfo.h"
 
@@ -21,10 +23,13 @@ public:
 	void insert(MapInfo* item, sf::FloatRect itemSize); // Interts an object into the quad, or determines if it should go into a child quad
 
 	std::list<MapInfo*> search(sf::FloatRect searchArea);
-	void searchQuad(sf::FloatRect searchArea, std::list<MapInfo*> coveredItems);
+	void searchQuad(sf::FloatRect searchArea, std::list<MapInfo*>* coveredItems);
 
+	void items(std::list<MapInfo*>* listItems);
 	std::list<MapInfo*> items();
 	sf::FloatRect getQuadRect() { return quadRect; }
+
+	void debugDraw(sf::RenderWindow* window);
 
 private:
 	unsigned int depth = 0;

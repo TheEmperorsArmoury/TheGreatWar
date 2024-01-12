@@ -10,5 +10,5 @@ struct MapInfo {
     bool    fogOfWar;
 
     std::string     terrain;   
-    sf::Vector2f    position;
+    sf::FloatRect   rect;
 };
