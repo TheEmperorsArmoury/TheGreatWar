@@ -1,10 +1,13 @@
 #pragma once
 
+#include <iostream>
 #include <list>
 
 #include "SFML/Graphics.hpp"
 
 #include "MapInfo.h"
+#include "QuadTree.h"
+#include "GridGenerator.h"
 
 class GameState
 {
@@ -12,13 +15,15 @@ public:
 	GameState();
 	~GameState();
 
-	MapInfo** getMapData() { return Map; }
+	QuadTree* getQuadtreeInstance() { return &quadtree; }
 	void clearAndInitializeMap();
 
-	static const int mapSize = 12;
+	static const int mapSize = 500;
 private:
-	MapInfo** Map = nullptr;
+	QuadTree quadtree;
 
 	std::list<MapInfo> terrainMap;
+
+	const float WorldSize = 10000.0f;
 };
 

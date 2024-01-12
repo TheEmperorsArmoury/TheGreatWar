@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <list>
 
 #include "SFML/Graphics.hpp"
 

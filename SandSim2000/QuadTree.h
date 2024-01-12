@@ -5,8 +5,6 @@
 #include <list>
 
 #include "SFML/Graphics/Rect.hpp"
-//just for testing quadtree for now
-#include "SFML/Graphics.hpp"
 
 #include "MapInfo.h"
 
@@ -15,6 +13,7 @@
 class QuadTree
 {
 public:
+	QuadTree() {}
 	QuadTree(sf::FloatRect size, unsigned int Depth);
 	void resize(sf::FloatRect size);
 	void clear();
@@ -29,8 +28,6 @@ public:
 	std::list<MapInfo*> items();
 	sf::FloatRect getQuadRect() { return quadRect; }
 
-	void debugDraw(sf::RenderWindow* window);
-
 private:
 	unsigned int depth = 0;
 
@@ -38,8 +35,7 @@ private:
 	sf::FloatRect quadRect;
 	std::vector<MapInfo*> quadItems;
 
-	//	The rect of the children quads
+	//	Children nodes data
 	std::array<sf::FloatRect, 4> childQuadRect{};
-	//	A pointer to the children quads
 	std::array<std::shared_ptr<QuadTree>, 4> childQuad;
 };

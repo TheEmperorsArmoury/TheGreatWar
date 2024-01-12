@@ -124,13 +124,3 @@ std::list<MapInfo*> QuadTree::items()
     items(&listItems);
     return listItems;
 }
-
-// Will draw the rect
-void QuadTree::debugDraw(sf::RenderWindow* window)
-{
-    sf::RectangleShape square(quadRect.getPosition());
-    square.setOutlineColor(sf::Color::White);
-    square.setScale(quadRect.getSize());
-
-    window->draw(square);
-}

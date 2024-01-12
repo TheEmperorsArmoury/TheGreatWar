@@ -48,33 +48,31 @@ void AnimationManager::renderTerrainMap(sf::RenderWindow* window, GameState* gam
     sf::FloatRect viewBounds(0, 0, window->getSize().x, window->getSize().y);
 
     sf::Sprite sprite = sf::Sprite();
-    GridGenerator gridGenerator;
+    QuadTree* quadtree = gameState->getQuadtreeInstance();
+
     int centerOffsetX = window->getSize().x / 2;
-    int OffsetY = 200;
+    int OffsetY = -1000;
 
-    for (int i = 0; i < gameState->mapSize; i++)
+    viewBounds.left -= centerOffsetX;
+    viewBounds.top -= OffsetY;
+
+    std::list<MapInfo*> items = quadtree->search(viewBounds);
+
+    for (const auto* object : items)
     {
-        for (int j = 0; j < gameState->mapSize; j++)
-        {
-            //Sets the texture of the sprite to the corresponding Grass tile
-            sprite.setTexture(GrassTexture[gameState->getMapData()[i][j].height]);
-            sprite.setTextureRect(sf::IntRect(0, 0, 100, gameState->getMapData()[i][j].height * 50 + 100));
+        sprite.setTexture(GrassTexture[object->height]);
+        sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(object->rect.getSize())));
 
-            // Set the sprite position
-            sf::Vector2f isometricPosition = gridGenerator.cartesianToIsometricTransform(sf::Vector2f(i, j));
+        sf::Vector2f isometricPosition = object->rect.getPosition();
+
+        isometricPosition.y *= object->z;
+        isometricPosition.y += OffsetY;
+        isometricPosition.y -= 50 * object->height;
+
+        isometricPosition.x += centerOffsetX;
             
-            // Y Transformations
-            isometricPosition.y *= gameState->getMapData()[i][j].z;
-            isometricPosition.y += OffsetY;
-            isometricPosition.y -= 50 * gameState->getMapData()[i][j].height;
+        sprite.setPosition(isometricPosition);
 
-            // X Transformations
-            isometricPosition.x += centerOffsetX;
-            sprite.setPosition(isometricPosition);
-
-            // Culling
-            if(viewBounds.intersects(sprite.getGlobalBounds()))
-                window->draw(sprite);
-        }
+        window->draw(sprite);
     }
 }
