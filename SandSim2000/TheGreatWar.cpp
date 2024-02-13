@@ -1,32 +1,35 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "InputStateManager.h"
+#include <SFML/Graphics.hpp>
 
 //Test
 
 int main() {
-    unsigned int mapSize = 16;
-    GameStateManager gameStateManager = GameStateManager(mapSize * mapSize);
+    sf::RenderWindow window(sf::VideoMode(800, 600), "AI Test Window");
 
-    Camera camera;
-    Scene scene;
-
-    while (camera.window.isOpen()) {
-        InputStateManager::getInstance().updateInputState(camera.window);
-
+    while (window.isOpen()) {
         sf::Event event;
-        while (camera.window.pollEvent(event)) {
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                camera.window.close();
-            }
-            else if (event.type == sf::Event::MouseWheelScrolled) {
-                camera.Zoom(event);
+                window.close();
             }
         }
-        if (!camera.Update()) { break; }
-        scene.UpdateGameScene(camera, gameStateManager.getState());
-        camera.Draw(scene.gameScene);
+
+        window.clear(sf::Color::Black);
+
+        sf::RectangleShape rectangle(sf::Vector2f(100, 50));
+        rectangle.setPosition(sf::Vector2f(200, 150));
+        rectangle.setFillColor(sf::Color::Red);
+        window.draw(rectangle);
+
+        sf::RectangleShape rectangle2(sf::Vector2f(50, 100));
+        rectangle2.setPosition(sf::Vector2f(400, 250));
+        rectangle2.setFillColor(sf::Color::Red);
+        window.draw(rectangle2);
+
+        window.display();
     }
+
     return 0;
 }
-

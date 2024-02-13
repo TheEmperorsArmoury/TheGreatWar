@@ -33,28 +33,13 @@
     <ClCompile Include="MovementManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InfantryAndCavalryAgent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MovementManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VehicleAgent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeSplitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputStateManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameStateManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FieldAgents.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
@@ -66,7 +51,7 @@
     <ClCompile Include="BattlefieldMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="spritesheet.cpp">
+    <ClCompile Include="SpriteManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,22 +74,10 @@
     <ClInclude Include="MovementManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InfantryAndCavalryAgent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MovementManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VehicleAgent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeSplitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainTile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputStateManager.h">
@@ -114,12 +87,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameStateManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FieldAgents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BattlefieldCell.h">
@@ -137,14 +104,9 @@
     <ClInclude Include="BattlefieldMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="spritesheet.h">
+    <ClInclude Include="SpriteManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="TheGreatWar.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">
