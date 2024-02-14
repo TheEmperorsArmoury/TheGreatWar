@@ -5,6 +5,9 @@
 
 Scene::Scene() {}
 
+// Charlie Team: Please change the UpdateGameScene so it updates based on the zoom level condition
+// found in the InputState. 0-2 zoom level is subterranean, 3-5 is tactical, don't worry about strategic for now.
+
 void Scene::UpdateGameScene(Camera& cam, GameState& gameState) {
 	GridGenerator gridGenerator;
 	sf::IntRect viewbounds(0, 0, cam.window.getSize().x, cam.window.getSize().y);

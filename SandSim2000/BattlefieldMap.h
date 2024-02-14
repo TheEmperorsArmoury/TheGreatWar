@@ -34,6 +34,7 @@ private:
 	std::list<std::pair<sf::Texture, std::string>> grassTextures;
 
 	SpriteManager grass_spritesheet;
+	SpriteManager dirt_spritesheet;
 
 	void initDepthMap();
 	void initDirectionMap();

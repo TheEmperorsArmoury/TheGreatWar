@@ -2,10 +2,20 @@
 #include <cmath>
 #include <iostream>
 
+// Charlie Team: Please create a new method to initialise the subterranean map. It won't have any features, 
+// just a plain grid of underground dirt sprites, no depth and no direction. Then ensure the GameStateManager
+// uses the right map initiallisation when initiallising quad tree maps, ie tactical or subterranean.
+// Also in the initSpriteMap() method, add a condition so it intialises the correct set of sprites based on the map, 
+// tacticalMap or subterraneanMap.
+
+
 void BattlefieldMap::initMap(unsigned int mapSize)
 {
     size = static_cast<int>(mapSize);
     grass_spritesheet = SpriteManager("../resources/images/Terrain/grass/grass_spritesheet.png", 8, 2);
+
+    // Chalie Team: I'm not sure the SpriteManager is correctly picking up this sprite, have a look at that please.
+    dirt_spritesheet = SpriteManager("../resources/images/Terrain/dirt/dirt_spritesheet.png", 8, 2);
         
     initDepthMap();
     initDirectionMap();

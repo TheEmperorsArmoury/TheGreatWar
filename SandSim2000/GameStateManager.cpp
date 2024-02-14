@@ -6,6 +6,14 @@ GameStateManager::GameStateManager(unsigned int numCells) {
     initializeBattlefieldVector(numCells);
 }
 
+// Charlie Team: Right now this code only initialises and generates 1 quadTree,
+// pleaes change this class so the tacticalMap and subterraneanMap will both get initialised and generated.
+// Try to build in such a way that can have the strategicMap initialised and genreated too, later.
+// So maybe change the method names to initialseMap and generateMap,
+// then pass the relevant map in as an argument if possible, just an idea, follw a better way if you find one.
+
+// Regardless of which map, all iterators stored in the quad trees point to objects all stored in the battlefieldVector. 
+
 void GameStateManager::initialiseQuadTree(unsigned int battlefieldSize, unsigned int& index) {
     battlefieldMap.initMap(static_cast<unsigned int>(battlefieldSize / 100));
     state.quadTree = new QuadTree(sf::IntRect(0, 0, battlefieldSize, battlefieldSize), 0);
