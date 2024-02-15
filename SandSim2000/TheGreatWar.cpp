@@ -3,10 +3,8 @@
 #include "InputStateManager.h"
 #include <SFML/Graphics.hpp>
 
-//Test
-
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "AI Test Window");
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "AI Test Window", sf::Style::Fullscreen);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -18,15 +16,28 @@ int main() {
 
         window.clear(sf::Color::Black);
 
-        sf::RectangleShape rectangle(sf::Vector2f(100, 50));
-        rectangle.setPosition(sf::Vector2f(200, 150));
-        rectangle.setFillColor(sf::Color::Red);
-        window.draw(rectangle);
+        sf::RectangleShape redSquare(sf::Vector2f(100, 100)); 
+        redSquare.setPosition(window.getSize().x - redSquare.getSize().x,
+            window.getSize().y / 2 - redSquare.getSize().y / 2);
+        redSquare.setFillColor(sf::Color::Red);
+        window.draw(redSquare);
 
-        sf::RectangleShape rectangle2(sf::Vector2f(50, 100));
-        rectangle2.setPosition(sf::Vector2f(400, 250));
-        rectangle2.setFillColor(sf::Color::Red);
-        window.draw(rectangle2);
+
+        sf::RectangleShape blueRectangle(sf::Vector2f(50, 100));
+        blueRectangle.setPosition(window.getSize().x / 2 - blueRectangle.getSize().x / 2,
+            window.getSize().y / 2 - blueRectangle.getSize().y / 2);
+        blueRectangle.setFillColor(sf::Color::Blue);
+        window.draw(blueRectangle);
+
+
+        int numYellowSquares = 5;  
+        sf::RectangleShape yellowSquare(sf::Vector2f(20, 20));
+        yellowSquare.setPosition(0, window.getSize().y / 2 - yellowSquare.getSize().y);
+        yellowSquare.setFillColor(sf::Color::Yellow);
+        for (int i = 0; i < numYellowSquares; i++) {
+            window.draw(yellowSquare);
+            yellowSquare.move(0, yellowSquare.getSize().y + 5);
+        }
 
         window.display();
     }
