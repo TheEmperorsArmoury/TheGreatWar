@@ -3,8 +3,21 @@
 #include "InputStateManager.h"
 #include <SFML/Graphics.hpp>
 
+
+static void SpawnRect(sf::Vector2f dimensions, sf::Vector2f position, sf::Color color, sf::RenderWindow& window, int outlineThickness = 5)
+{
+    sf::RectangleShape tempSquare(sf::Vector2f(dimensions.x, dimensions.y));
+    tempSquare.setPosition(position.x - tempSquare.getSize().x / 2, position.y - tempSquare.getSize().y / 2);
+    tempSquare.setFillColor(color);
+    window.draw(tempSquare);
+}
+
+
 int main() {
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "AI Test Window", sf::Style::Fullscreen);
+
+    
+
 
     while (window.isOpen()) {
         sf::Event event;
@@ -17,17 +30,11 @@ int main() {
         window.clear(sf::Color::Black);
 
 
-        sf::RectangleShape redSquare(sf::Vector2f(100, 100)); 
-        redSquare.setPosition(window.getSize().x - redSquare.getSize().x,
-            window.getSize().y / 2 - redSquare.getSize().y / 2);
-        redSquare.setFillColor(sf::Color::Red);
-        window.draw(redSquare);
 
-        sf::RectangleShape blueRectangle(sf::Vector2f(50, 100));
-        blueRectangle.setPosition(window.getSize().x / 2 - blueRectangle.getSize().x / 2,
-            window.getSize().y / 2 - blueRectangle.getSize().y / 2);
-        blueRectangle.setFillColor(sf::Color::Blue);
-        window.draw(blueRectangle);
+
+        SpawnRect(sf::Vector2f(100, 100), sf::Vector2f(window.getSize().x, window.getSize().y / 2), sf::Color::Red, window);
+        SpawnRect(sf::Vector2f(50, 100), sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), sf::Color::Blue, window);
+
 
         int numYellowSquares = 5;  
         sf::RectangleShape yellowSquare(sf::Vector2f(20, 20));
@@ -43,3 +50,5 @@ int main() {
 
     return 0;
 }
+
+
