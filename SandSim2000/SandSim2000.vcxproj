@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Agent.cpp" />
+    <ClCompile Include="AgentAI.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
     <ClCompile Include="AssetCRUDManager.cpp" />
     <ClCompile Include="BattlefieldMap.cpp" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Agent.h" />
+    <ClInclude Include="AgentAI.h" />
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="AssetCRUDManager.h" />
     <ClInclude Include="BattlefieldCell.h" />
