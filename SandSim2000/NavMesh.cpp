@@ -2,9 +2,9 @@
 
 
 
-NavMesh::NavMesh(sf::RenderWindow* window)
+NavMesh::NavMesh(sf::RenderWindow& window)
 {
-	m_window = window;
+	m_window = &window;
 	InitializeMesh();
 }
 
@@ -21,7 +21,7 @@ bool NavMesh::InitializeMesh()
 	{
 		for (int y = 0; y < 20; y++)
 		{
-			
+
 		}
 	}
 	

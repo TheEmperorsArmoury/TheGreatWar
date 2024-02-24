@@ -1,14 +1,13 @@
-#include "Camera.h"
-#include "Scene.h"
-#include "InputStateManager.h"
-#include <SFML/Graphics.hpp>
+#include "TheGreatWar.h"
 
 
-static void SpawnRect(sf::Vector2f dimensions, sf::Vector2f position, sf::Color color, sf::RenderWindow& window, int outlineThickness = 5)
+static void SpawnRect(sf::Vector2f dimensions, sf::Vector2f position, sf::Color color, sf::Color outlineColor, sf::RenderWindow& window, int outlineThickness = 1)
 {
     sf::RectangleShape tempSquare(sf::Vector2f(dimensions.x, dimensions.y));
     tempSquare.setPosition(position.x - tempSquare.getSize().x / 2, position.y - tempSquare.getSize().y / 2);
     tempSquare.setFillColor(color);
+    tempSquare.setOutlineThickness(outlineThickness);
+    tempSquare.setOutlineColor(outlineColor);
     window.draw(tempSquare);
 }
 
@@ -32,8 +31,9 @@ int main() {
 
 
 
-        SpawnRect(sf::Vector2f(100, 100), sf::Vector2f(window.getSize().x, window.getSize().y / 2), sf::Color::Red, window);
-        SpawnRect(sf::Vector2f(50, 100), sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), sf::Color::Blue, window);
+        SpawnRect(sf::Vector2f(100, 100), sf::Vector2f(window.getSize().x, window.getSize().y / 2), sf::Color::Red, sf::Color::Red, window);
+        SpawnRect(sf::Vector2f(50, 100), sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), sf::Color::Transparent, sf::Color::White, window);
+
 
 
         int numYellowSquares = 5;  

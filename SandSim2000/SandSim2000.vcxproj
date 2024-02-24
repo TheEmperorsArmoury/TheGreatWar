@@ -174,6 +174,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SpriteManager.h" />
     <ClInclude Include="TerrainTile.h" />
+    <ClInclude Include="TheGreatWar.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Downloads\thunder-skull_38043.ico" />

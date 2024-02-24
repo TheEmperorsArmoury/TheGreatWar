@@ -15,7 +15,7 @@ protected:
 	sf::RenderWindow* m_window;
 
 public:
-	NavMesh(sf::RenderWindow* window);
+	NavMesh(sf::RenderWindow& window);
 	~NavMesh();
 	bool InitializeMesh();
 
