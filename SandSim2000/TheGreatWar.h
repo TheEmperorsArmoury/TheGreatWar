@@ -6,7 +6,7 @@
 
 class TheGreatWar {
 public:
-	static void SpawnRect(sf::Vector2f dimensions, sf::Vector2f position, sf::Color color, sf::Color outlineColor, sf::RenderWindow& window, int outlineThickness = 5);
+	static void SpawnRect(sf::Vector2f dimensions, sf::Vector2f position, sf::Color color, sf::Color outlineColor, int outlineThickness = 5);
 	static sf::RenderWindow window;
 	static void InitializeNavMesh();
 
@@ -20,3 +20,5 @@ private:
 protected:
 
 };
+
+sf::RenderWindow TheGreatWar::window(sf::VideoMode::getDesktopMode(), "AI Test Window", sf::Style::Fullscreen);

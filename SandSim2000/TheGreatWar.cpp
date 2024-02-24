@@ -1,53 +1,49 @@
 #include "TheGreatWar.h"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "AI Test Window", sf::Style::Fullscreen);
-
     
-
-
-    while (window.isOpen()) {
+    while (TheGreatWar::window.isOpen()) {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (TheGreatWar::window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                window.close();
+                TheGreatWar::window.close();
             }
         }
 
-        window.clear(sf::Color::Black);
+        TheGreatWar::window.clear(sf::Color::Black);
 
-        TheGreatWar::SpawnRect(sf::Vector2f(100, 100), sf::Vector2f(window.getSize().x, window.getSize().y / 2), sf::Color::Red, sf::Color::Red, window);
-        TheGreatWar::SpawnRect(sf::Vector2f(50, 100), sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), sf::Color::Transparent, sf::Color::Blue, window);
-        
-        int numYellowSquares = 5;  
+        TheGreatWar::SpawnRect(sf::Vector2f(100, 100), sf::Vector2f(TheGreatWar::window.getSize().x, TheGreatWar::window.getSize().y / 2), sf::Color::Red, sf::Color::Red);
+        TheGreatWar::SpawnRect(sf::Vector2f(50, 100), sf::Vector2f(TheGreatWar::window.getSize().x / 2, TheGreatWar::window.getSize().y / 2), sf::Color::Transparent, sf::Color::Blue);
+
+        int numYellowSquares = 5;
         sf::RectangleShape yellowSquare(sf::Vector2f(20, 20));
-        yellowSquare.setPosition(0, window.getSize().y / 2 - yellowSquare.getSize().y);
+        yellowSquare.setPosition(0, TheGreatWar::window.getSize().y / 2 - yellowSquare.getSize().y);
         yellowSquare.setFillColor(sf::Color::Yellow);
         for (int i = 0; i < numYellowSquares; i++) {
-            window.draw(yellowSquare);
+            TheGreatWar::window.draw(yellowSquare);
             yellowSquare.move(0, yellowSquare.getSize().y + 10);
         }
 
         // Building navmesh
         TheGreatWar::InitializeNavMesh();
 
-        
 
 
-        window.display();
+
+        TheGreatWar::window.display();
     }
 
     return 0;
 }
 
-void TheGreatWar::SpawnRect(sf::Vector2f dimensions, sf::Vector2f position, sf::Color color, sf::Color outlineColor, sf::RenderWindow& window, int outlineThickness)
+void TheGreatWar::SpawnRect(sf::Vector2f dimensions, sf::Vector2f position, sf::Color color, sf::Color outlineColor, int outlineThickness)
 {
     sf::RectangleShape tempSquare(sf::Vector2f(dimensions.x, dimensions.y));
     tempSquare.setPosition(position.x - tempSquare.getSize().x / 2, position.y - tempSquare.getSize().y / 2);
     tempSquare.setFillColor(color);
     tempSquare.setOutlineThickness(outlineThickness);
     tempSquare.setOutlineColor(outlineColor);
-    window.draw(tempSquare);
+    TheGreatWar::window.draw(tempSquare);
 }
 
 void TheGreatWar::InitializeNavMesh()
@@ -57,7 +53,7 @@ void TheGreatWar::InitializeNavMesh()
     {
         for (int y = 0; y < 20; y++)
         {
-            TheGreatWar::SpawnRect(sf::Vector2f(m_CellSize, m_CellSize), sf::Vector2f(x * m_CellSize, y * m_CellSize), sf::Color::Transparent, sf::Color::White, window, 1);
+            TheGreatWar::SpawnRect(sf::Vector2f(m_CellSize, m_CellSize), sf::Vector2f(x * m_CellSize, y * m_CellSize), sf::Color::Transparent, sf::Color::White, 1);
         }
     }
 
