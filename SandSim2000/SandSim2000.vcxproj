@@ -150,7 +150,6 @@
     <ClCompile Include="GridGenerator.cpp" />
     <ClCompile Include="InputStateManager.cpp" />
     <ClCompile Include="MovementManager.cpp" />
-    <ClCompile Include="NavMesh.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
     <ClCompile Include="TheGreatWar.cpp" />
@@ -169,7 +168,6 @@
     <ClInclude Include="InputState.h" />
     <ClInclude Include="InputStateManager.h" />
     <ClInclude Include="MovementManager.h" />
-    <ClInclude Include="NavMesh.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SpriteManager.h" />

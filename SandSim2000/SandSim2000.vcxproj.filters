@@ -57,9 +57,6 @@
     <ClCompile Include="AgentAI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NavMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GridGenerator.h">
@@ -114,9 +111,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AgentAI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NavMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TheGreatWar.h">
