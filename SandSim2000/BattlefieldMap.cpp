@@ -8,6 +8,47 @@
 // Also in the initSpriteMap() method, add a condition so it intialises the correct set of sprites based on the map, 
 // tacticalMap or subterraneanMap.
 
+void BattlefieldMap::initSubterraneanMap(unsigned int mapSize) {
+  size = static_cast<int>(mapSize);
+
+  depthMap = new int* [size];
+  for (int y = 0; y < size; y++) {
+    depthMap[y] = new int[size];
+    for (int x = 0; x < size; x++) {
+      depthMap[y][x] = 0;  // Constant depth for subterranean level as a placeholder dont judge
+    }
+  }
+
+  // Create a single-value direction map (e.g., NONE)
+  directionMap = new Direction* [size];
+  for (int y = 0; y < size; y++) {
+    directionMap[y] = new Direction[size];
+    for (int x = 0; x < size; x++) {
+      directionMap[y][x] = NONE;  // No specific direction for underground
+    }
+  }
+
+  // Initialize the sprite map with dirt sprites
+  initSpriteMap(true); // Pass true to use dirt sprites
+}
+void BattlefieldMap::initSpriteMap(bool isSubterranean) {
+  spriteMap = new sf::Sprite** [size];
+  for (int y = 0; y < size; y++) {
+    spriteMap[y] = new sf::Sprite* [size];
+
+    for (int x = 0; x < size; x++) {
+      if (isSubterranean) {
+        // Use dirt sprites for subterranean
+        spriteMap[y][x] = dirt_spritesheet.getSprite(directionMap[y][x]);
+      } else {
+        // Use grass sprites for tactical maps (default behavior)
+        spriteMap[y][x] = grass_spritesheet.getSprite(directionMap[y][x]);
+      }
+      spriteMap[y][x]->setTexture(isSubterranean ? dirt_spritesheet.texture : grass_spritesheet.texture);
+    }
+  }
+}
+//should work i think
 
 void BattlefieldMap::initMap(unsigned int mapSize)
 {
@@ -15,6 +56,7 @@ void BattlefieldMap::initMap(unsigned int mapSize)
     grass_spritesheet = SpriteManager("../resources/images/Terrain/grass/grass_spritesheet.png", 8, 2);
 
     // Chalie Team: I'm not sure the SpriteManager is correctly picking up this sprite, have a look at that please.
+    // not sure, if it's wrong. tried to experiment with random pngs looks like it works
     dirt_spritesheet = SpriteManager("../resources/images/Terrain/dirt/dirt_spritesheet.png", 8, 2);
         
     initDepthMap();
