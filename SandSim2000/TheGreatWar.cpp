@@ -1,62 +1,91 @@
-#include "TheGreatWar.h"
+#include <SFML/Graphics.hpp>
+#include <queue>
+#include <set>
+#include <iostream>
+
+const int rows = 10;
+const int cols = 10;
+const int border = 10;
+const int cellSize = 80;
+const int cellBorderWidth = 4;
+
+const std::vector<int> startingPos = { 6, 6 };
+const std::vector<int> endingPos = { 7, 7 };
+
+struct Cell {
+    sf::Vector2i position;
+};
+
+struct Node {
+    int x, y;
+    int gScore;
+    int hScore;
+    int fScore;
+    Node* parent;
+};
+
+sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
+    if (x < 0 || x >= cols || y < 0 || y >= rows) {
+        return sf::Vector2f(-1.0f, -1.0f);
+    }
+
+    float xPos = x * cellSize + border;
+    float yPos = y * cellSize + border;
+
+    float xOffset = (cellSize - cellSize) / 2.0f;
+    float yOffset = (cellSize - cellSize) / 2.0f;
+
+    return sf::Vector2f(xPos + xOffset, yPos + yOffset);
+}
+
 
 int main() {
-    
-    while (TheGreatWar::window.isOpen()) {
+    sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+    sf::RenderWindow window(desktopMode, "Cell Grid with Squares", sf::Style::Fullscreen);
+
+    sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
+    cell.setFillColor(sf::Color::White);
+    cell.setOutlineThickness(cellBorderWidth);
+    cell.setOutlineColor(sf::Color(100, 100, 100));
+
+    sf::RectangleShape startSquare(sf::Vector2f(cellSize - cellBorderWidth, cellSize - cellBorderWidth));
+    startSquare.setFillColor(sf::Color::Blue);
+
+    sf::RectangleShape endSquare(sf::Vector2f(cellSize - cellBorderWidth, cellSize - cellBorderWidth));
+    endSquare.setFillColor(sf::Color::Red);
+
+    while (window.isOpen()) {
+
         sf::Event event;
-        while (TheGreatWar::window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                TheGreatWar::window.close();
+
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                window.close();
+            }
+            else if (event.type == sf::Event::Closed) {
+                window.close();
             }
         }
 
-        TheGreatWar::window.clear(sf::Color::Black);
+        window.clear(sf::Color::Black);
 
-        TheGreatWar::SpawnRect(sf::Vector2f(100, 100), sf::Vector2f(TheGreatWar::window.getSize().x, TheGreatWar::window.getSize().y / 2), sf::Color::Red, sf::Color::Red);
-        TheGreatWar::SpawnRect(sf::Vector2f(50, 100), sf::Vector2f(TheGreatWar::window.getSize().x / 2, TheGreatWar::window.getSize().y / 2), sf::Color::Transparent, sf::Color::Blue);
-
-        int numYellowSquares = 5;
-        sf::RectangleShape yellowSquare(sf::Vector2f(20, 20));
-        yellowSquare.setPosition(0, TheGreatWar::window.getSize().y / 2 - yellowSquare.getSize().y);
-        yellowSquare.setFillColor(sf::Color::Yellow);
-        for (int i = 0; i < numYellowSquares; i++) {
-            TheGreatWar::window.draw(yellowSquare);
-            yellowSquare.move(0, yellowSquare.getSize().y + 10);
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                cell.setPosition(getScreenPositionFromGridCoordinate(x, y, cellSize));
+                window.draw(cell);
+            }
         }
 
-        // Building navmesh
-        TheGreatWar::InitializeNavMesh();
+        sf::Vector2f startSquarePos = getScreenPositionFromGridCoordinate(startingPos[0], startingPos[1], cellSize);
+        startSquare.setPosition(startSquarePos);
+        window.draw(startSquare);
 
+        sf::Vector2f endSquarePos = getScreenPositionFromGridCoordinate(endingPos[0], endingPos[1], cellSize);
+        endSquare.setPosition(endSquarePos);
+        window.draw(endSquare);
 
-
-
-        TheGreatWar::window.display();
+        window.display();
     }
 
     return 0;
 }
-
-void TheGreatWar::SpawnRect(sf::Vector2f dimensions, sf::Vector2f position, sf::Color color, sf::Color outlineColor, int outlineThickness)
-{
-    sf::RectangleShape tempSquare(sf::Vector2f(dimensions.x, dimensions.y));
-    tempSquare.setPosition(position.x - tempSquare.getSize().x / 2, position.y - tempSquare.getSize().y / 2);
-    tempSquare.setFillColor(color);
-    tempSquare.setOutlineThickness(outlineThickness);
-    tempSquare.setOutlineColor(outlineColor);
-    TheGreatWar::window.draw(tempSquare);
-}
-
-void TheGreatWar::InitializeNavMesh()
-{
-    // 2D array to initialize grid
-    for (int x = 0; x < 20; x++)
-    {
-        for (int y = 0; y < 20; y++)
-        {
-            TheGreatWar::SpawnRect(sf::Vector2f(m_CellSize, m_CellSize), sf::Vector2f(x * m_CellSize, y * m_CellSize), sf::Color::Transparent, sf::Color::White, 1);
-        }
-    }
-
-}
-
-
