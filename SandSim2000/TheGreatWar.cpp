@@ -14,6 +14,8 @@ const std::vector<int> endingPos = { 7, 7 };
 
 struct Cell {
     sf::Vector2i position;
+    bool impassableTerrain;
+    std::shared_ptr<sf::RectangleShape> shape;
 };
 
 struct Node {
@@ -22,6 +24,9 @@ struct Node {
     int hScore;
     int fScore;
     Node* parent;
+    bool isInPath;
+
+    Node(int _x, int _y) : x(_x), y(_y), gScore(0), hScore(0), fScore(0), parent(nullptr), isInPath(false) {}
 };
 
 sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
