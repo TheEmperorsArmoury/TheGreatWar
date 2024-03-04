@@ -8,6 +8,23 @@ const int cols = 10;
 const int border = 10;
 const int cellSize = 80;
 const int cellBorderWidth = 4;
+const sf::Vector2f cellShape(static_cast<float>(cellSize), static_cast<float>(cellSize));
+sf::Sprite arrowSprite;
+
+void initializeArrowSprite(const std::string& arrowImagePath) {
+    sf::Image arrowImage;
+    if (!arrowImage.loadFromFile(arrowImagePath)) {
+        std::cerr << "Error loading arrow image: " << arrowImagePath << std::endl;
+        return;
+    }
+
+    sf::Texture arrowTexture;
+    if (!arrowTexture.loadFromImage(arrowImage)) {
+        std::cerr << "Error creating texture from image: " << arrowImagePath << std::endl;
+        return;
+    }
+    arrowSprite.setTexture(arrowTexture);
+}
 
 const std::vector<int> startingPos = { 6, 6 };
 const std::vector<int> endingPos = { 7, 7 };
@@ -16,6 +33,7 @@ struct Cell {
     sf::Vector2i position;
     bool impassableTerrain;
     std::shared_ptr<sf::RectangleShape> shape;
+    sf::Vector2f direction;
 };
 
 struct Node {
@@ -29,9 +47,16 @@ struct Node {
     Node(int _x, int _y) : x(_x), y(_y), gScore(0), hScore(0), fScore(0), parent(nullptr), isInPath(false) {}
 };
 
-void VectorFieldPathfinding(const Node& start, const Node& goal, const Cell grid[][cols]) {
+void VectorFieldPathfinding(const Node& goal, const Cell grid[][cols]) {
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
+            const Cell& currentCell = grid[y][x];
 
+
+        }
+    }
 }
+
 
 sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
     if (x < 0 || x >= cols || y < 0 || y >= rows) {
@@ -45,6 +70,20 @@ sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
     float yOffset = (cellSize - cellSize) / 2.0f;
 
     return sf::Vector2f(xPos + xOffset, yPos + yOffset);
+}
+
+void drawArrowOnCell(sf::RenderWindow& window, const Cell& cell) {
+    sf::Vector2f arrowPosition = cell.shape->getPosition();
+    float arrowScale = std::min(cell.shape->getSize().x / arrowSprite.getLocalBounds().width,
+        cell.shape->getSize().y / arrowSprite.getLocalBounds().height);
+
+    arrowSprite.setPosition(arrowPosition);
+    arrowSprite.setScale(arrowScale, arrowScale);
+
+    float rotationDegrees = cell.direction.x * 180.0f / 3.14159f;
+    arrowSprite.setRotation(rotationDegrees); 
+
+    window.draw(arrowSprite);
 }
 
 void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float cellBorderWidth, sf::Color defaultFillColor, sf::Color defaultOutlineColor) {
