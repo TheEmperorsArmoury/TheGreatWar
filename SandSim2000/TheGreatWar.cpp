@@ -29,6 +29,10 @@ struct Node {
     Node(int _x, int _y) : x(_x), y(_y), gScore(0), hScore(0), fScore(0), parent(nullptr), isInPath(false) {}
 };
 
+void VectorFieldPathfinding(const Node& start, const Node& goal, const Cell grid[][cols]) {
+
+}
+
 sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
     if (x < 0 || x >= cols || y < 0 || y >= rows) {
         return sf::Vector2f(-1.0f, -1.0f);
