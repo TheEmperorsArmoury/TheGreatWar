@@ -38,6 +38,20 @@ sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
     return sf::Vector2f(xPos + xOffset, yPos + yOffset);
 }
 
+void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float cellBorderWidth, sf::Color defaultFillColor, sf::Color defaultOutlineColor) {
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            grid[y][x].position = sf::Vector2i(x, y);
+            grid[y][x].impassableTerrain = false;
+            grid[y][x].shape = std::make_shared<sf::RectangleShape>(cellShape);
+            grid[y][x].shape->setFillColor(defaultFillColor);
+            grid[y][x].shape->setOutlineThickness(cellBorderWidth);
+            grid[y][x].shape->setOutlineColor(defaultOutlineColor);
+            grid[y][x].shape->setPosition(x * cellSize, y * cellSize);
+        }
+    }
+}
+
 
 int main() {
     sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
@@ -53,6 +67,9 @@ int main() {
 
     sf::RectangleShape endSquare(sf::Vector2f(cellSize - cellBorderWidth, cellSize - cellBorderWidth));
     endSquare.setFillColor(sf::Color::Red);
+
+    Cell grid[rows][cols];
+    initializeGrid(grid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
 
     while (window.isOpen()) {
 
