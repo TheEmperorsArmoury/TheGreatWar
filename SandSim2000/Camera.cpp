@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include<iostream>
 
 Camera::Camera()
     : window(sf::VideoMode::getDesktopMode(), "The Great War", sf::Style::Fullscreen) {
@@ -7,8 +8,15 @@ Camera::Camera()
     window.setMouseCursorGrabbed(true);
 
     sf::Vector2u screenSize = window.getSize();
-    offsetX = -(screenSize.x / 2.0f);
-    offsetY = -(screenSize.y / 2.0f);
+    int screensizex = screenSize.x;
+    int screensizey = screenSize.y;
+   
+   offsetX = -(screenSize.x*0.5 / 2.0f);
+    //offsetX = -(500 / 2.0f);
+    offsetY = -(screenSize.y*0.5 / 2.0f);
+    //offsetY = -(500 / 2.0f);
+    if (!renderTexture.create(2000, 2000));
+    if (!minimapTexture.create(500, 500));
 }
 
 bool Camera::Update() {
@@ -61,8 +69,13 @@ void Camera::Zoom(sf::Event& event) {
         }
     }
 }
-
-void Camera::WorldToScreen(float worldX, float worldY, int& outScreenX, int& outScreenY) 
+void Camera::MinimapToScreen(float worldX, float worldY, int& outScreenX, int& outScreenY)
+{
+    outScreenX = (int)(worldX)*minimapscaleX;
+    outScreenY = (int)(worldY)*minimapscaleY;
+    if (worldX == 0) { std::cout << "position to 0" << std::endl; }
+}
+void Camera::WorldToScreen(float worldX, float worldY, int& outScreenX, int& outScreenY)
 {
     outScreenX = (int)((worldX - offsetX) * scaleX);
     outScreenY = (int)((worldY - offsetY) * scaleY);
@@ -98,9 +111,9 @@ void Camera::clickPan(const InputState& inputState) {
 }
 
 void Camera::scrollPan(const InputState& inputState) {
-    const int edgeThreshold = 150;
+    const int edgeThreshold = 200;
     sf::Vector2i mousePos = inputState.mousePosition;
-    sf::Vector2u windowSize = window.getSize();
+    sf::Vector2u windowSize = renderTexture.getSize();
 
     float panSpeedX = 0.0f;
     float panSpeedY = 0.0f;
@@ -127,20 +140,59 @@ void Camera::snapPan(const InputState& inputState)
     //Once there are scenery and units on the battlefield, snap panning will be possible via hotkeys, snapping the camera to the position of a unit.
 }
 
-void Camera::Draw(std::vector<sf::Sprite> sprites)
-{
+void Camera::Draw(std::vector<sf::Sprite> sprites) {
     window.clear(sf::Color::Black);
-    int centerOffsetX = window.getSize().x / 2;
-
-    for (sf::Sprite s : sprites)
-    {
+    renderTexture.clear(sf::Color::White);
+    minimapTexture.clear(sf::Color::Transparent);
+  
+    int centerOffsetX = renderTexture.getSize().x / 2;
+    int minimapcenterOffsetX = minimapTexture.getSize().x / 2;
+      
+     
+    for (sf::Sprite s : sprites) {
         int screenX, screenY;
         WorldToScreen(s.getPosition().x + centerOffsetX, s.getPosition().y, screenX, screenY);
 
-        s.setPosition(static_cast<float>(screenX - 50 * scaleX), static_cast<float>(screenY));
+        s.setPosition(static_cast<float>(screenX), static_cast<float>(screenY));
         s.setScale(static_cast<float>(scaleX), static_cast<float>(scaleY));
 
-        window.draw(s);
+
+        renderTexture.draw(s);
     }
+   for (sf::Sprite s : sprites) {
+       int screenX, screenY;
+       MinimapToScreen(s.getPosition().x + minimapcenterOffsetX, s.getPosition().y, screenX, screenY);
+
+       s.setPosition(static_cast<float>(screenX), static_cast<float>(screenY));
+       s.setScale(static_cast<float>(minimapscaleX), static_cast<float>(minimapscaleY));
+       // s.setRotation(-45);
+
+
+
+       minimapTexture.draw(s);
+   }
+    minimapTexture.display();
+    renderTexture.display();
+   
+    //create textures for minimap and main game 
+    const sf::Texture& texture = renderTexture.getTexture();
+    const sf::Texture& minimaptexture = minimapTexture.getTexture();
+    // draw it to the window
+    
+   
+    sf::Sprite mapSprite(texture);
+    sf::Sprite minimapSprite(minimaptexture);
+    sf::Vector2u screenSize = window.getSize();
+    float screensizex = screenSize.x;
+    float screensizey = screenSize.y;
+    float screenratio = (screensizex) / (screensizey);
+    mapSprite.setPosition(static_cast<float>( - 50 * 1), static_cast<float>(1));
+    mapSprite.setScale(static_cast<float>(0.5 * screenratio), static_cast<float>(0.5));
+    minimapSprite.setPosition(static_cast<float>(screenX + 1400), static_cast<float>(screenY + 675));
+    minimapSprite.setScale(static_cast<float>(0.6), static_cast<float>(0.6));
+   // minimapSprite.setRotation(45);
+    //draw and display textures 
+    window.draw(mapSprite);
+    window.draw(minimapSprite);
     window.display();
 }

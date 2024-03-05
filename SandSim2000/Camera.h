@@ -17,15 +17,18 @@ public:
 
     void WorldToScreen(float worldX, float worldY, int& outScreenX, int& outScreenY);
     void ScreenToWorld(int screenX, int screenY, float& outWorldX, float& outWorldY);
-
+    void MinimapToScreen(float worldX, float worldY, int& outScreenX, int& outScreenY);
     void Zoom(sf::Event& event);
 
 
     sf::RenderWindow window;
-
+    sf::RenderTexture renderTexture;
+    sf::RenderTexture minimapTexture;
+    float screenRatio = 0.f;
     float offsetX = 0.f;
     float offsetY = 0.f;
-
+    float minimapscaleX = 0.6f;
+    float minimapscaleY = 0.6f;
     float scaleX = 1.f;
     float scaleY = 1.f;
 private:
@@ -42,7 +45,7 @@ private:
 
     int screenX = 0.f;
     int screenY = 0.f;
-
+   
     void clickPan(const InputState& inputState);
     void scrollPan(const InputState& inputState);
     void snapPan(const InputState& inputState);
