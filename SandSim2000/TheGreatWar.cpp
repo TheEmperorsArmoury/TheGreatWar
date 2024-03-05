@@ -2,6 +2,9 @@
 #include <queue>
 #include <set>
 #include <iostream>
+#include <memory>
+#include <cmath>
+
 
 const int rows = 10;
 const int cols = 10;
@@ -10,20 +13,24 @@ const int cellSize = 80;
 const int cellBorderWidth = 4;
 const sf::Vector2f cellShape(static_cast<float>(cellSize), static_cast<float>(cellSize));
 sf::Sprite arrowSprite;
+sf::Texture arrowTexture;
 
-void initializeArrowSprite(const std::string& arrowImagePath) {
-    sf::Image arrowImage;
-    if (!arrowImage.loadFromFile(arrowImagePath)) {
-        std::cerr << "Error loading arrow image: " << arrowImagePath << std::endl;
+
+void initializeArrowSprite() {
+    const std::string arrowImagePath = "../resources/images/Utilities/vectorFieldPointer.png";
+
+    if (!arrowTexture.loadFromFile(arrowImagePath)) {
+        std::cerr << "Error loading arrow texture: " << arrowImagePath << std::endl;
         return;
     }
 
-    sf::Texture arrowTexture;
-    if (!arrowTexture.loadFromImage(arrowImage)) {
-        std::cerr << "Error creating texture from image: " << arrowImagePath << std::endl;
+    if (arrowTexture.getSize().x == 0 || arrowTexture.getSize().y == 0) {
+        std::cerr << "Error: Loaded texture has zero size." << std::endl;
         return;
     }
+
     arrowSprite.setTexture(arrowTexture);
+
 }
 
 const std::vector<int> startingPos = { 6, 6 };
@@ -47,15 +54,19 @@ struct Node {
     Node(int _x, int _y) : x(_x), y(_y), gScore(0), hScore(0), fScore(0), parent(nullptr), isInPath(false) {}
 };
 
-void VectorFieldPathfinding(const Node& goal, const Cell grid[][cols]) {
+void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows][cols]) {
     for (int y = 0; y < rows; ++y) {
         for (int x = 0; x < cols; ++x) {
-            const Cell& currentCell = grid[y][x];
-
-
+            if (x % 2 == 0) {
+                grid[y][x].direction = sf::Vector2f(-1.0f, 0.0f);
+            }
+            else {
+                grid[y][x].direction = sf::Vector2f(1.0f, 0.0f);
+            }
         }
     }
 }
+
 
 
 sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
@@ -73,18 +84,26 @@ sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
 }
 
 void drawArrowOnCell(sf::RenderWindow& window, const Cell& cell) {
-    sf::Vector2f arrowPosition = cell.shape->getPosition();
-    float arrowScale = std::min(cell.shape->getSize().x / arrowSprite.getLocalBounds().width,
-        cell.shape->getSize().y / arrowSprite.getLocalBounds().height);
+    sf::Vector2f spriteSize(50.0f, 50.0f);
+    sf::Vector2f cellCenter = cell.shape->getPosition() +
+        sf::Vector2f(border + (cellSize - 2 * cellBorderWidth) / 2.0f,
+            border + (cellSize - 2 * cellBorderWidth) / 2.0f);
 
-    arrowSprite.setPosition(arrowPosition);
+    float arrowScale = std::min(cell.shape->getSize().x / spriteSize.x,
+        cell.shape->getSize().y / spriteSize.y);
+
+    arrowSprite.setOrigin(spriteSize / 2.0f);
+    arrowSprite.setPosition(cellCenter);
     arrowSprite.setScale(arrowScale, arrowScale);
 
-    float rotationDegrees = cell.direction.x * 180.0f / 3.14159f;
-    arrowSprite.setRotation(rotationDegrees); 
+    float angleInRadians = std::atan2(cell.direction.y, cell.direction.x);
+    float rotationDegrees = angleInRadians * 180.0f / 3.14159f;
 
+    arrowSprite.setRotation(rotationDegrees);
     window.draw(arrowSprite);
 }
+
+
 
 void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float cellBorderWidth, sf::Color defaultFillColor, sf::Color defaultOutlineColor) {
     for (int y = 0; y < rows; y++) {
@@ -96,12 +115,14 @@ void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float c
             grid[y][x].shape->setOutlineThickness(cellBorderWidth);
             grid[y][x].shape->setOutlineColor(defaultOutlineColor);
             grid[y][x].shape->setPosition(x * cellSize, y * cellSize);
+            grid[y][x].direction = sf::Vector2f(0.0f, 0.0f);
         }
     }
 }
 
 
 int main() {
+
     sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(desktopMode, "Cell Grid with Squares", sf::Style::Fullscreen);
 
@@ -115,6 +136,8 @@ int main() {
 
     sf::RectangleShape endSquare(sf::Vector2f(cellSize - cellBorderWidth, cellSize - cellBorderWidth));
     endSquare.setFillColor(sf::Color::Red);
+
+    initializeArrowSprite();
 
     Cell grid[rows][cols];
     initializeGrid(grid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
@@ -133,13 +156,17 @@ int main() {
         }
 
         window.clear(sf::Color::Black);
+        VectorFieldPathfinding(endingPos, grid);
 
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
+                Cell currentCell = grid[y][x];
                 cell.setPosition(getScreenPositionFromGridCoordinate(x, y, cellSize));
                 window.draw(cell);
+                drawArrowOnCell(window, currentCell);
             }
         }
+       
 
         sf::Vector2f startSquarePos = getScreenPositionFromGridCoordinate(startingPos[0], startingPos[1], cellSize);
         startSquare.setPosition(startSquarePos);
@@ -151,6 +178,6 @@ int main() {
 
         window.display();
     }
-
+    
     return 0;
 }
