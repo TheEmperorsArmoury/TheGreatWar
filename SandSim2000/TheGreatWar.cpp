@@ -33,14 +33,16 @@ void initializeArrowSprite() {
 
 }
 
-const std::vector<int> startingPos = { 6, 6 };
-const std::vector<int> endingPos = { 7, 7 };
+
+const std::vector<int> endingPos = { 6, 3 };
+
+
 
 struct Cell {
     sf::Vector2i position;
     bool impassableTerrain;
     std::shared_ptr<sf::RectangleShape> shape;
-    sf::Vector2f direction;
+    int direction;
 };
 
 struct Node {
@@ -54,19 +56,31 @@ struct Node {
     Node(int _x, int _y) : x(_x), y(_y), gScore(0), hScore(0), fScore(0), parent(nullptr), isInPath(false) {}
 };
 
+
+
 void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows][cols]) {
+    // Extract goal coordinates
+    int goalX = endingPos[0];
+    int goalY = endingPos[1];
+
+    // Iterate through the grid
     for (int y = 0; y < rows; ++y) {
         for (int x = 0; x < cols; ++x) {
-            if (x % 2 == 0) {
-                grid[y][x].direction = sf::Vector2f(-1.0f, 0.0f);
-            }
-            else {
-                grid[y][x].direction = sf::Vector2f(1.0f, 0.0f);
-            }
+            // Calculate the vector from the current cell to the goal
+            float deltaX = static_cast<float>(goalX - x);
+            float deltaY = static_cast<float>(goalY - y);
+
+            // Calculate the angle (in radians) between the vector and the positive x-axis
+            float angle = std::atan2(deltaY, deltaX);
+
+            // Convert the angle to degrees and add an extra 90 degrees
+            int angleDegrees = static_cast<int>((angle * 180.0f / 3.14159f) + 90.0f);
+
+            // Set the direction of the cell to point towards the goal
+            grid[y][x].direction = angleDegrees;
         }
     }
 }
-
 
 
 sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
@@ -96,12 +110,12 @@ void drawArrowOnCell(sf::RenderWindow& window, const Cell& cell) {
     arrowSprite.setPosition(cellCenter);
     arrowSprite.setScale(arrowScale, arrowScale);
 
-    float angleInRadians = std::atan2(cell.direction.y, cell.direction.x);
-    float rotationDegrees = angleInRadians * 180.0f / 3.14159f;
+    float rotationDegrees = static_cast<float>(cell.direction);
 
     arrowSprite.setRotation(rotationDegrees);
     window.draw(arrowSprite);
 }
+
 
 
 
@@ -115,7 +129,7 @@ void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float c
             grid[y][x].shape->setOutlineThickness(cellBorderWidth);
             grid[y][x].shape->setOutlineColor(defaultOutlineColor);
             grid[y][x].shape->setPosition(x * cellSize, y * cellSize);
-            grid[y][x].direction = sf::Vector2f(0.0f, 0.0f);
+            grid[y][x].direction = 0;
         }
     }
 }
@@ -167,17 +181,11 @@ int main() {
             }
         }
        
-
-        sf::Vector2f startSquarePos = getScreenPositionFromGridCoordinate(startingPos[0], startingPos[1], cellSize);
-        startSquare.setPosition(startSquarePos);
-        window.draw(startSquare);
-
         sf::Vector2f endSquarePos = getScreenPositionFromGridCoordinate(endingPos[0], endingPos[1], cellSize);
         endSquare.setPosition(endSquarePos);
         window.draw(endSquare);
 
         window.display();
-    }
-    
+    }   
     return 0;
 }
