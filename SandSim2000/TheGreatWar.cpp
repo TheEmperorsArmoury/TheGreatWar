@@ -35,6 +35,7 @@ void initializeArrowSprite() {
 
 
 const std::vector<int> endingPos = { 6, 3 };
+//std::vector<Node> openList;
 
 
 
@@ -43,6 +44,7 @@ struct Cell {
     bool impassableTerrain;
     std::shared_ptr<sf::RectangleShape> shape;
     int direction;
+    int distance;
 };
 
 struct Node {
@@ -66,21 +68,16 @@ void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows]
     // Iterate through the grid
     for (int y = 0; y < rows; ++y) {
         for (int x = 0; x < cols; ++x) {
-            // Calculate the vector from the current cell to the goal
-            float deltaX = static_cast<float>(goalX - x);
-            float deltaY = static_cast<float>(goalY - y);
+            // Calculate Euclidean distance to the goal
+            int distanceToGoal = static_cast<int>(
+                std::sqrt(std::pow(goalX - x, 2) + std::pow(goalY - y, 2)));
 
-            // Calculate the angle (in radians) between the vector and the positive x-axis
-            float angle = std::atan2(deltaY, deltaX);
-
-            // Convert the angle to degrees and add an extra 90 degrees
-            int angleDegrees = static_cast<int>((angle * 180.0f / 3.14159f) + 90.0f);
-
-            // Set the direction of the cell to point towards the goal
-            grid[y][x].direction = angleDegrees;
+            // Set the distance of the cell
+            grid[y][x].distance = distanceToGoal;
         }
     }
 }
+
 
 
 sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
@@ -178,7 +175,9 @@ int main() {
                 cell.setPosition(getScreenPositionFromGridCoordinate(x, y, cellSize));
                 window.draw(cell);
                 drawArrowOnCell(window, currentCell);
+                std::cout << grid[y][x].distance << "\t";
             }
+            std::cout << std::endl;
         }
        
         sf::Vector2f endSquarePos = getScreenPositionFromGridCoordinate(endingPos[0], endingPos[1], cellSize);
