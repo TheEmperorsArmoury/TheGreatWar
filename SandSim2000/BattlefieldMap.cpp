@@ -6,7 +6,7 @@ void BattlefieldMap::initMap(unsigned int mapSize)
 {
     size = static_cast<int>(mapSize);
     grass_spritesheet = SpriteManager::GetInstance()->GetSpriteSheet("GrassTerrain");
-        
+  
     initDepthMap();
     initDirectionMap();
     initSpriteMap();

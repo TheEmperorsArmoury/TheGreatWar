@@ -22,7 +22,7 @@ public:
 	sf::Sprite* getSpriteAtPosition(sf::Vector2i position) {
 		return spriteMap[position.y][position.x]; 
 	}
-
+	SpriteSheet grass_spritesheet_public = grass_spritesheet;
 	int getHeightAtPosition(sf::Vector2i position) { return depthMap[position.y][position.x]; }
 private:
 	int size = 0;
@@ -30,8 +30,10 @@ private:
 	int** depthMap = nullptr;
 	Direction** directionMap = nullptr;
 	sf::Sprite*** spriteMap = nullptr;
+	
 
 	SpriteSheet grass_spritesheet;
+	SpriteSheet minimap_grass_spritesheet;
 
 	void initDepthMap();
 	void initDirectionMap();

@@ -7,7 +7,7 @@ Scene::Scene() {}
 
 void Scene::UpdateGameScene(Camera& cam, GameState& gameState) {
 	GridGenerator gridGenerator;
-	sf::IntRect viewbounds(0, 0, cam.window.getSize().x, cam.window.getSize().y);
+	sf::IntRect viewbounds(0, 0, cam.renderTexture.getSize().x, cam.renderTexture.getSize().y);
 
 	gameScene.clear();
 	findViewportIterators(gameState.quadTree, cam, gridGenerator, viewbounds);
@@ -17,7 +17,7 @@ void Scene::findViewportIterators(QuadTree* root, Camera& cam, GridGenerator& gr
 
 	int screenX, screenY;
 	sf::Vector2f isometricPosition = gridGenerator.cartesianToIsometricTransform(sf::Vector2f(root->quadRect.getPosition().x / TILE_SIZE, root->quadRect.getPosition().y / TILE_SIZE));
-	cam.WorldToScreen(isometricPosition.x + cam.window.getSize().x / 2, isometricPosition.y, screenX, screenY);
+	cam.WorldToScreen(isometricPosition.x + cam.renderTexture.getSize().x / 2, isometricPosition.y, screenX, screenY);
 
 	int sizeX = root->quadRect.getSize().x * cam.scaleX;
 	int sizeY = (root->quadRect.getSize().y / 2 + (TILE_SIZE / 2) * MAX_TILE_DEPTH) * cam.scaleY;

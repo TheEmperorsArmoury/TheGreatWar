@@ -59,7 +59,7 @@ void GameStateManager::generateQuadTree(QuadTree* root, unsigned int& index) {
 
 BattlefieldCell GameStateManager::generateCell(int x, int y)
 {
-    BattlefieldCell newCell;
+    BattlefieldCell newCell; 
     newCell.x = x;
     newCell.y = y;
     newCell.terrainSprite = battlefieldMap.getSpriteAtPosition({ x, y });
