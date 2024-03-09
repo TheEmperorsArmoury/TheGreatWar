@@ -5,11 +5,11 @@
 #include <memory>
 #include <cmath>
 
-
-const int rows = 10;
-const int cols = 10;
+//Not scaling up correctly, possibly too much drawing in the main loop, possibly main loop running too fast. 
+const int rows = 12;
+const int cols = 12;
 const int border = 10;
-const int cellSize = 80;
+const int cellSize = 40;
 const int cellBorderWidth = 4;
 const sf::Vector2f cellShape(static_cast<float>(cellSize), static_cast<float>(cellSize));
 sf::Sprite arrowSprite;
@@ -48,6 +48,7 @@ std::vector<std::vector<int>> wallSections = {
 };
 
 struct Cell {
+    sf::Vector2f screenPosition;
     sf::Vector2i position;
     bool impassableTerrain;
     std::shared_ptr<sf::RectangleShape> shape;
@@ -97,11 +98,6 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
 
                 int neighborDistance = 1;  
                 int tentativeDistance = grid[y][x].distance + neighborDistance + grid[newY][newX].cost;
-
-
-                //int neighborDistance = direction.first == 0 || direction.second == 0 ? 10 : 14;
-                //int tentativeDistance = grid[y][x].distance + neighborDistance + grid[newY][newX].cost;
-
 
                 if (tentativeDistance < grid[newY][newX].distance || grid[newY][newX].distance == 0) {
                     grid[newY][newX].distance = tentativeDistance;
@@ -211,6 +207,7 @@ void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float c
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
             grid[y][x].position = sf::Vector2i(x, y);
+            grid[y][x].screenPosition = getScreenPositionFromGridCoordinate(x, y, cellSize);
             grid[y][x].impassableTerrain = false;
             grid[y][x].shape = std::make_shared<sf::RectangleShape>(cellShape);
             grid[y][x].shape->setFillColor(defaultFillColor);
@@ -274,8 +271,6 @@ int main() {
     sf::RectangleShape wallSquare(sf::Vector2f(cellSize - cellBorderWidth, cellSize - cellBorderWidth));
     wallSquare.setFillColor(sf::Color::Black);
 
-
-
     initializeArrowSprite();
 
     Cell grid[rows][cols];
@@ -297,12 +292,11 @@ int main() {
         }
 
         window.clear(sf::Color::Black);
-        VectorFieldPathfinding(endingPos, grid);
 
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 Cell currentCell = grid[y][x];
-                cell.setPosition(getScreenPositionFromGridCoordinate(x, y, cellSize));
+                cell.setPosition(currentCell.screenPosition);
                 window.draw(cell);
                 drawArrowOnCell(window, currentCell);
 
@@ -312,16 +306,13 @@ int main() {
                 }
             }
         }
-       
-        sf::Vector2f endSquarePos = getScreenPositionFromGridCoordinate(endingPos[0], endingPos[1], cellSize);
-        endSquare.setPosition(endSquarePos);
         window.draw(endSquare);
 
         window.display();
     }
 
     //PrintCosts(grid, endingPos);
-    PrintDistances(grid, endingPos);
+    //PrintDistances(grid, endingPos);
     //PrintRotations(grid, endingPos);
 
     return 0;
