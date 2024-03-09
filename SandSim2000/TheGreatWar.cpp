@@ -30,14 +30,22 @@ void initializeArrowSprite() {
     }
 
     arrowSprite.setTexture(arrowTexture);
-
+    arrowSprite.setRotation(0.0f);
 }
 
 
-const std::vector<int> endingPos = { 6, 3 };
-//std::vector<Node> openList;
+const std::vector<int> endingPos = { 9,9 };
+const std::vector<int> wall1 = { 3,4 };
+const std::vector<int> wall2 = { 3,5 };
+const std::vector<int> wall3 = { 3,6 };
+const std::vector<int> wall4 = { 3,7 };
 
-
+std::vector<std::vector<int>> wallSections = {
+  wall1, 
+  wall2, 
+  wall3, 
+  wall4 
+};
 
 struct Cell {
     sf::Vector2i position;
@@ -45,6 +53,7 @@ struct Cell {
     std::shared_ptr<sf::RectangleShape> shape;
     int direction;
     int distance;
+    int rotation;
 };
 
 struct Node {
@@ -58,27 +67,105 @@ struct Node {
     Node(int _x, int _y) : x(_x), y(_y), gScore(0), hScore(0), fScore(0), parent(nullptr), isInPath(false) {}
 };
 
-
-
-void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows][cols]) {
-    // Extract goal coordinates
+void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
     int goalX = endingPos[0];
     int goalY = endingPos[1];
 
-    // Iterate through the grid
-    for (int y = 0; y < rows; ++y) {
-        for (int x = 0; x < cols; ++x) {
-            // Calculate Euclidean distance to the goal
-            int distanceToGoal = static_cast<int>(
-                std::sqrt(std::pow(goalX - x, 2) + std::pow(goalY - y, 2)));
+    std::queue<std::pair<int, int>> queue;
 
-            // Set the distance of the cell
-            grid[y][x].distance = distanceToGoal;
+    queue.push({ goalY, goalX });
+    grid[goalY][goalX].distance = 0;
+
+    std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
+
+    const std::vector<std::pair<int, int>> directions = { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
+
+    while (!queue.empty()) {
+        int y = queue.front().first;
+        int x = queue.front().second;
+        queue.pop();
+
+        visited[y][x] = true;
+
+        for (auto& direction : directions) {
+            int newY = y + direction.first;
+            int newX = x + direction.second;
+
+            if (newY >= 0 && newY < rows && newX >= 0 && newX < cols && !visited[newY][newX] && grid[newY][newX].distance != 1000) {
+                int distanceToGoal = static_cast<int>(10 * std::sqrt(std::pow(goalX - newX, 2) + std::pow(goalY - newY, 2)));
+
+                int neighborDistance = direction.first == 0 || direction.second == 0 ? 10 : 14;
+
+                if (distanceToGoal + grid[y][x].distance < grid[newY][newX].distance || grid[newY][newX].distance == 0) {
+                    grid[newY][newX].distance = distanceToGoal + grid[y][x].distance;
+                    queue.push({ newY, newX });
+                }
+            }
+        }
+    }
+}
+
+void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
+    int goalX = endingPos[0];
+    int goalY = endingPos[1];
+    std::queue<std::pair<int, int>> queue;
+
+    const std::vector<std::pair<int, int>> directions = { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
+
+    queue.push({ goalY, goalX });
+
+    std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
+
+    while (!queue.empty()) {
+        int y = queue.front().first;
+        int x = queue.front().second;
+        queue.pop();
+
+        visited[y][x] = true;
+
+        int minDistance = INT_MAX;
+        int bestNeighborX = 0;
+        int bestNeighborY = 0;
+
+        for (int neighborY = y - 1; neighborY <= y + 1; ++neighborY) {
+            for (int neighborX = x - 1; neighborX <= x + 1; ++neighborX) {
+                if (neighborX < 0 || neighborX >= cols || neighborY < 0 || neighborY >= rows || (neighborX == x && neighborY == y)) {
+                    continue;
+                }
+
+                if (grid[neighborY][neighborX].distance < minDistance) {
+                    minDistance = grid[neighborY][neighborX].distance;
+                    bestNeighborX = neighborX;
+                    bestNeighborY = neighborY;
+                }
+            }
+        }
+        float dx = bestNeighborX - x;
+        float dy = bestNeighborY - y;
+        float angle = std::atan2(dy, dx); 
+        angle = angle * 180.0f / 3.14; 
+        angle = std::fmod(angle + 360.0f, 360.0f); 
+
+        grid[y][x].rotation = angle + 90;
+
+        for (auto& direction : directions) {
+            int newY = y + direction.first;
+            int newX = x + direction.second;
+
+            if (newY >= 0 && newY < rows && newX >= 0 && newX < cols && !visited[newY][newX]) {
+                queue.push({ newY, newX });
+            }
         }
     }
 }
 
 
+
+void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows][cols]) {
+
+    GenerateDistanceMap(grid, endingPos);
+    CalculateCellRotations(grid, endingPos);
+}
 
 sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
     if (x < 0 || x >= cols || y < 0 || y >= rows) {
@@ -107,7 +194,7 @@ void drawArrowOnCell(sf::RenderWindow& window, const Cell& cell) {
     arrowSprite.setPosition(cellCenter);
     arrowSprite.setScale(arrowScale, arrowScale);
 
-    float rotationDegrees = static_cast<float>(cell.direction);
+    float rotationDegrees = static_cast<float>(cell.rotation);
 
     arrowSprite.setRotation(rotationDegrees);
     window.draw(arrowSprite);
@@ -121,6 +208,7 @@ void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float c
         for (int x = 0; x < cols; x++) {
             grid[y][x].position = sf::Vector2i(x, y);
             grid[y][x].impassableTerrain = false;
+            grid[y][x].distance = (y == 2 && (x >= 2 && x <= 5)) ? 1000 : 0;
             grid[y][x].shape = std::make_shared<sf::RectangleShape>(cellShape);
             grid[y][x].shape->setFillColor(defaultFillColor);
             grid[y][x].shape->setOutlineThickness(cellBorderWidth);
@@ -131,6 +219,27 @@ void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float c
     }
 }
 
+
+
+void PrintDistances(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
+    VectorFieldPathfinding(endingPos, grid);
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
+            std::cout << grid[y][x].distance << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void PrintRotations(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
+    VectorFieldPathfinding(endingPos, grid);
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
+            std::cout << grid[y][x].rotation << " ";
+        }
+        std::cout << std::endl;
+    }
+}
 
 int main() {
 
@@ -148,10 +257,17 @@ int main() {
     sf::RectangleShape endSquare(sf::Vector2f(cellSize - cellBorderWidth, cellSize - cellBorderWidth));
     endSquare.setFillColor(sf::Color::Red);
 
+    sf::RectangleShape wallSquare(sf::Vector2f(cellSize - cellBorderWidth, cellSize - cellBorderWidth));
+    wallSquare.setFillColor(sf::Color::Black);
+
+
+
     initializeArrowSprite();
 
     Cell grid[rows][cols];
     initializeGrid(grid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
+    VectorFieldPathfinding(endingPos, grid);
+
 
     while (window.isOpen()) {
 
@@ -175,9 +291,13 @@ int main() {
                 cell.setPosition(getScreenPositionFromGridCoordinate(x, y, cellSize));
                 window.draw(cell);
                 drawArrowOnCell(window, currentCell);
-                std::cout << grid[y][x].distance << "\t";
+
+                // Draw black square if distance is 1000
+                if (grid[y][x].distance == 1000) {
+                    wallSquare.setPosition(getScreenPositionFromGridCoordinate(x, y, cellSize));
+                    window.draw(wallSquare);
+                }
             }
-            std::cout << std::endl;
         }
        
         sf::Vector2f endSquarePos = getScreenPositionFromGridCoordinate(endingPos[0], endingPos[1], cellSize);
@@ -186,5 +306,8 @@ int main() {
 
         window.display();
     }   
+    PrintDistances(grid, endingPos);
+    //PrintRotations(grid, endingPos);
+
     return 0;
 }
