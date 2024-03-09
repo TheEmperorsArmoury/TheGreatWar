@@ -34,7 +34,7 @@ void initializeArrowSprite() {
 }
 
 
-const std::vector<int> endingPos = { 9,9 };
+const std::vector<int> endingPos = { 0,0 };
 const std::vector<int> wall1 = { 3,4 };
 const std::vector<int> wall2 = { 3,5 };
 const std::vector<int> wall3 = { 3,6 };
@@ -54,6 +54,7 @@ struct Cell {
     int direction;
     int distance;
     int rotation;
+    int cost;
 };
 
 struct Node {
@@ -91,13 +92,19 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
             int newY = y + direction.first;
             int newX = x + direction.second;
 
-            if (newY >= 0 && newY < rows && newX >= 0 && newX < cols && !visited[newY][newX] && grid[newY][newX].distance != 1000) {
-                int distanceToGoal = static_cast<int>(10 * std::sqrt(std::pow(goalX - newX, 2) + std::pow(goalY - newY, 2)));
+            if (newY >= 0 && newY < rows && newX >= 0 && newX < cols && !visited[newY][newX] && grid[newY][newX].distance != 255) {
+                int distanceToGoal = static_cast<int>(std::sqrt(std::pow(goalX - newX, 2) + std::pow(goalY - newY, 2)));
 
-                int neighborDistance = direction.first == 0 || direction.second == 0 ? 10 : 14;
+                int neighborDistance = 1;  
+                int tentativeDistance = grid[y][x].distance + neighborDistance + grid[newY][newX].cost;
 
-                if (distanceToGoal + grid[y][x].distance < grid[newY][newX].distance || grid[newY][newX].distance == 0) {
-                    grid[newY][newX].distance = distanceToGoal + grid[y][x].distance;
+
+                //int neighborDistance = direction.first == 0 || direction.second == 0 ? 10 : 14;
+                //int tentativeDistance = grid[y][x].distance + neighborDistance + grid[newY][newX].cost;
+
+
+                if (tentativeDistance < grid[newY][newX].distance || grid[newY][newX].distance == 0) {
+                    grid[newY][newX].distance = tentativeDistance;
                     queue.push({ newY, newX });
                 }
             }
@@ -200,26 +207,33 @@ void drawArrowOnCell(sf::RenderWindow& window, const Cell& cell) {
     window.draw(arrowSprite);
 }
 
-
-
-
 void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float cellBorderWidth, sf::Color defaultFillColor, sf::Color defaultOutlineColor) {
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
             grid[y][x].position = sf::Vector2i(x, y);
             grid[y][x].impassableTerrain = false;
-            grid[y][x].distance = (y == 2 && (x >= 2 && x <= 5)) ? 1000 : 0;
             grid[y][x].shape = std::make_shared<sf::RectangleShape>(cellShape);
             grid[y][x].shape->setFillColor(defaultFillColor);
             grid[y][x].shape->setOutlineThickness(cellBorderWidth);
             grid[y][x].shape->setOutlineColor(defaultOutlineColor);
             grid[y][x].shape->setPosition(x * cellSize, y * cellSize);
             grid[y][x].direction = 0;
+            grid[y][x].distance = 0; 
+            grid[y][x].rotation = 0;
+            grid[y][x].cost = (y == 2 && (x >= 2 && x <= 5)) ? 255 : 0;
         }
     }
 }
 
-
+void PrintCosts(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
+    VectorFieldPathfinding(endingPos, grid);
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
+            std::cout << grid[y][x].cost << " ";
+        }
+        std::cout << std::endl;
+    }
+}
 
 void PrintDistances(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
     VectorFieldPathfinding(endingPos, grid);
@@ -292,8 +306,7 @@ int main() {
                 window.draw(cell);
                 drawArrowOnCell(window, currentCell);
 
-                // Draw black square if distance is 1000
-                if (grid[y][x].distance == 1000) {
+                if (grid[y][x].cost == 255) {
                     wallSquare.setPosition(getScreenPositionFromGridCoordinate(x, y, cellSize));
                     window.draw(wallSquare);
                 }
@@ -305,7 +318,9 @@ int main() {
         window.draw(endSquare);
 
         window.display();
-    }   
+    }
+
+    //PrintCosts(grid, endingPos);
     PrintDistances(grid, endingPos);
     //PrintRotations(grid, endingPos);
 
