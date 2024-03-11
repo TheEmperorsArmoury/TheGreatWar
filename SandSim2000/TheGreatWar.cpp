@@ -5,7 +5,6 @@
 #include <memory>
 #include <cmath>
 
-//Not scaling up correctly, possibly too much drawing in the main loop, possibly main loop running too fast. 
 const int rows = 12;
 const int cols = 12;
 const int border = 10;
@@ -56,17 +55,6 @@ struct Cell {
     int distance;
     int rotation;
     int cost;
-};
-
-struct Node {
-    int x, y;
-    int gScore;
-    int hScore;
-    int fScore;
-    Node* parent;
-    bool isInPath;
-
-    Node(int _x, int _y) : x(_x), y(_y), gScore(0), hScore(0), fScore(0), parent(nullptr), isInPath(false) {}
 };
 
 void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
@@ -165,8 +153,9 @@ void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& end
 
 
 void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows][cols]) {
-
     GenerateDistanceMap(grid, endingPos);
+    
+    //Rotations are possibly slowing it all down.
     CalculateCellRotations(grid, endingPos);
 }
 
@@ -256,6 +245,7 @@ int main() {
 
     sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(desktopMode, "Cell Grid with Squares", sf::Style::Fullscreen);
+    window.setFramerateLimit(60);
 
     sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
     cell.setFillColor(sf::Color::White);
@@ -277,7 +267,33 @@ int main() {
     initializeGrid(grid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
     VectorFieldPathfinding(endingPos, grid);
 
+    
+    sf::VertexArray gridVertices(sf::Quads, rows * cols * 4); // Each cell has 4 vertices
 
+    // Initialize gridVertices outside the loop
+    int vertexIndex = 0;
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            Cell currentCell = grid[y][x];
+            sf::Vector2f position = currentCell.screenPosition;
+
+            // Add vertices for the current cell to the vertex array
+            gridVertices[vertexIndex + 0].position = position;
+            gridVertices[vertexIndex + 1].position = position + sf::Vector2f(cellSize, 0);
+            gridVertices[vertexIndex + 2].position = position + sf::Vector2f(cellSize, cellSize);
+            gridVertices[vertexIndex + 3].position = position + sf::Vector2f(0, cellSize);
+
+            gridVertices[vertexIndex + 0].color = sf::Color::White;
+            gridVertices[vertexIndex + 1].color = sf::Color::White;
+            gridVertices[vertexIndex + 2].color = sf::Color::White;
+            gridVertices[vertexIndex + 3].color = sf::Color::White;
+
+            // Draw arrows or walls if needed (previous code remains unchanged)
+
+            vertexIndex += 4;
+        }
+    }
+    
     while (window.isOpen()) {
 
         sf::Event event;
@@ -292,7 +308,9 @@ int main() {
         }
 
         window.clear(sf::Color::Black);
-
+        
+        window.draw(gridVertices);
+       
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 Cell currentCell = grid[y][x];
@@ -307,6 +325,7 @@ int main() {
             }
         }
         window.draw(endSquare);
+        
 
         window.display();
     }
