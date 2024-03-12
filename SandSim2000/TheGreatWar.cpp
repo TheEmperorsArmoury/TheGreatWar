@@ -5,8 +5,8 @@
 #include <memory>
 #include <cmath>
 
-const int rows = 12;
-const int cols = 12;
+const int rows = 25;
+const int cols = 25;
 const int border = 10;
 const int cellSize = 40;
 const int cellBorderWidth = 4;
@@ -33,17 +33,49 @@ void initializeArrowSprite() {
 }
 
 
-const std::vector<int> endingPos = { 0,0 };
-const std::vector<int> wall1 = { 3,4 };
-const std::vector<int> wall2 = { 3,5 };
-const std::vector<int> wall3 = { 3,6 };
-const std::vector<int> wall4 = { 3,7 };
+const std::vector<int> endingPos = { 12, 12 };
+
+// Walls on the left side (one cell away from the goal)
+const std::vector<int> wall1 = { 9, 11 };
+const std::vector<int> wall2 = { 9, 12 };
+const std::vector<int> wall3 = { 9, 13 };
+const std::vector<int> wall4 = { 9, 14 };
+
+// Walls on the bottom side (two cells away from the goal)
+
+const std::vector<int> wall5 = { 11, 10 };
+const std::vector<int> wall6 = { 12, 10 };
+const std::vector<int> wall7 = { 13, 10 };
+const std::vector<int> wall8 = { 14, 10 };
+const std::vector<int> wall13 = { 10, 10 };
+const std::vector<int> wall14 = { 9, 10 };
+
+// Wall on the right side (one cell away from the goal)
+const std::vector<int> wall9 = { 14, 11 };
+const std::vector<int> wall10 = { 14, 12 };
+const std::vector<int> wall11 = { 14, 13 };
+const std::vector<int> wall12 = { 14, 14 };
+
+
+
+
+
 
 std::vector<std::vector<int>> wallSections = {
   wall1, 
   wall2, 
   wall3, 
-  wall4 
+  wall4, 
+  wall5,
+  wall6,
+  wall7,
+  wall8,
+  wall9,
+  wall10,
+  wall11,
+  wall12,
+  wall13,
+  wall14
 };
 
 struct Cell {
@@ -68,7 +100,10 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
 
     std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
 
-    const std::vector<std::pair<int, int>> directions = { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
+    const std::vector<std::pair<int, int>> direction = {
+    {0, 1}, {0, -1}, {1, 0}, {-1, 0},
+    {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+    };
 
     while (!queue.empty()) {
         int y = queue.front().first;
@@ -77,14 +112,13 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
 
         visited[y][x] = true;
 
-        for (auto& direction : directions) {
-            int newY = y + direction.first;
-            int newX = x + direction.second;
-
+        for (int i = 0; i < 7; ++i) {
+            int newY = y + direction[i].first;
+            int newX = x + direction[i].second;
             if (newY >= 0 && newY < rows && newX >= 0 && newX < cols && !visited[newY][newX] && grid[newY][newX].distance != 255) {
-                int distanceToGoal = static_cast<int>(std::sqrt(std::pow(goalX - newX, 2) + std::pow(goalY - newY, 2)));
 
-                int neighborDistance = 1;  
+                int neighborDistance = (i < 4) ? 10 : 14;
+
                 int tentativeDistance = grid[y][x].distance + neighborDistance + grid[newY][newX].cost;
 
                 if (tentativeDistance < grid[newY][newX].distance || grid[newY][newX].distance == 0) {
@@ -99,63 +133,41 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
 void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
     int goalX = endingPos[0];
     int goalY = endingPos[1];
-    std::queue<std::pair<int, int>> queue;
 
-    const std::vector<std::pair<int, int>> directions = { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
+            std::vector<std::pair<int, int>> neighbors = { {315, 0}, {0, 0}, {45, 0}, {270, 0}, {90, 0}, {225, 0}, {180, 0}, {135, 0} };
 
-    queue.push({ goalY, goalX });
+            int counter = 0;
 
-    std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
+            for (int neighborY = y - 1; neighborY <= y + 1; ++neighborY) {
+                for (int neighborX = x - 1; neighborX <= x + 1; ++neighborX) {
+                    if (!(neighborX == x && neighborY == y)) { 
+                        int distanceValue;
+                        if (neighborX >= 0 && neighborX < cols && neighborY >= 0 && neighborY < rows) {
+                            distanceValue = grid[neighborY][neighborX].distance;
+                        }
+                        else {
+                            distanceValue = grid[y][x].distance + 255;
+                        }
 
-    while (!queue.empty()) {
-        int y = queue.front().first;
-        int x = queue.front().second;
-        queue.pop();
 
-        visited[y][x] = true;
-
-        int minDistance = INT_MAX;
-        int bestNeighborX = 0;
-        int bestNeighborY = 0;
-
-        for (int neighborY = y - 1; neighborY <= y + 1; ++neighborY) {
-            for (int neighborX = x - 1; neighborX <= x + 1; ++neighborX) {
-                if (neighborX < 0 || neighborX >= cols || neighborY < 0 || neighborY >= rows || (neighborX == x && neighborY == y)) {
-                    continue;
-                }
-
-                if (grid[neighborY][neighborX].distance < minDistance) {
-                    minDistance = grid[neighborY][neighborX].distance;
-                    bestNeighborX = neighborX;
-                    bestNeighborY = neighborY;
+                        neighbors[counter].second = distanceValue;
+                        ++counter;
+                    }
                 }
             }
-        }
-        float dx = bestNeighborX - x;
-        float dy = bestNeighborY - y;
-        float angle = std::atan2(dy, dx); 
-        angle = angle * 180.0f / 3.14; 
-        angle = std::fmod(angle + 360.0f, 360.0f); 
+            std::sort(neighbors.begin(), neighbors.end(), [](const auto& a, const auto& b) {
+                return a.second < b.second;
+                });
 
-        grid[y][x].rotation = angle + 90;
-
-        for (auto& direction : directions) {
-            int newY = y + direction.first;
-            int newX = x + direction.second;
-
-            if (newY >= 0 && newY < rows && newX >= 0 && newX < cols && !visited[newY][newX]) {
-                queue.push({ newY, newX });
-            }
+            grid[y][x].rotation = neighbors[0].first;
         }
     }
 }
 
-
-
 void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows][cols]) {
     GenerateDistanceMap(grid, endingPos);
-    
-    //Rotations are possibly slowing it all down.
     CalculateCellRotations(grid, endingPos);
 }
 
@@ -206,7 +218,18 @@ void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float c
             grid[y][x].direction = 0;
             grid[y][x].distance = 0; 
             grid[y][x].rotation = 0;
-            grid[y][x].cost = (y == 2 && (x >= 2 && x <= 5)) ? 255 : 0;
+            grid[y][x].cost = 1;
+        }
+    }
+}
+
+void initialiseWalls(Cell grid[][cols], const std::vector<std::vector<int>>& wallSections) {
+    for (const std::vector<int>& wall : wallSections) {
+        int wallX = wall[1]; 
+        int wallY = wall[0]; 
+
+        if (wallX >= 0 && wallX < cols && wallY >= 0 && wallY < rows) {
+            grid[wallY][wallX].cost = 255; 
         }
     }
 }
@@ -241,6 +264,7 @@ void PrintRotations(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) 
     }
 }
 
+
 int main() {
 
     sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
@@ -265,19 +289,18 @@ int main() {
 
     Cell grid[rows][cols];
     initializeGrid(grid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
+    initialiseWalls(grid, wallSections);
     VectorFieldPathfinding(endingPos, grid);
 
     
-    sf::VertexArray gridVertices(sf::Quads, rows * cols * 4); // Each cell has 4 vertices
+    sf::VertexArray gridVertices(sf::Quads, rows * cols * 4); 
 
-    // Initialize gridVertices outside the loop
     int vertexIndex = 0;
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
             Cell currentCell = grid[y][x];
             sf::Vector2f position = currentCell.screenPosition;
 
-            // Add vertices for the current cell to the vertex array
             gridVertices[vertexIndex + 0].position = position;
             gridVertices[vertexIndex + 1].position = position + sf::Vector2f(cellSize, 0);
             gridVertices[vertexIndex + 2].position = position + sf::Vector2f(cellSize, cellSize);
@@ -287,8 +310,6 @@ int main() {
             gridVertices[vertexIndex + 1].color = sf::Color::White;
             gridVertices[vertexIndex + 2].color = sf::Color::White;
             gridVertices[vertexIndex + 3].color = sf::Color::White;
-
-            // Draw arrows or walls if needed (previous code remains unchanged)
 
             vertexIndex += 4;
         }
@@ -324,6 +345,8 @@ int main() {
                 }
             }
         }
+        sf::Vector2f endSquarePosition = getScreenPositionFromGridCoordinate(endingPos[0], endingPos[1], cellSize);
+        endSquare.setPosition(endSquarePosition);
         window.draw(endSquare);
         
 
@@ -331,7 +354,7 @@ int main() {
     }
 
     //PrintCosts(grid, endingPos);
-    //PrintDistances(grid, endingPos);
+    PrintDistances(grid, endingPos);
     //PrintRotations(grid, endingPos);
 
     return 0;
