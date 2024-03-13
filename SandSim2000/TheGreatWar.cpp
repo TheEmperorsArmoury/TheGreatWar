@@ -33,25 +33,25 @@ void initializeArrowSprite() {
 }
 
 
-const std::vector<int> endingPos = { 12,12 };
-const std::vector<int> wall1 = { 3,4 };
-const std::vector<int> wall2 = { 3,5 };
-const std::vector<int> wall3 = { 3,6 };
-const std::vector<int> wall4 = { 3,7 };
-const std::vector<int> wall5 = {3, 15 };
-const std::vector<int> wall6 = {3, 16 };
-const std::vector<int> wall7 = {3, 17 };
-const std::vector<int> wall8 = {3, 18 };
-const std::vector<int> wall9 = {3, 19 };
-const std::vector<int> wall10 = {3, 20 };
-const std::vector<int> wall11 = {3, 21 };
-const std::vector<int> wall12 = { 15, 11 };
-const std::vector<int> wall13 = { 15, 12 };
-const std::vector<int> wall14 = { 15, 13 };
-const std::vector<int> wall15 = { 15, 14 };
-const std::vector<int> wall16 = { 15, 15 };
-const std::vector<int> wall17 = { 15, 16 };
-const std::vector<int> wall18 = { 15, 17 };
+const std::vector<int> endingPos = { 12, 12 };
+const std::vector<int> wall1 = { 9, 10 };
+const std::vector<int> wall2 = { 10, 10 };
+const std::vector<int> wall3 = { 11, 10 };
+const std::vector<int> wall4 = { 12, 10 };
+const std::vector<int> wall5 = { 13, 10 };
+const std::vector<int> wall6 = { 9, 9 };
+const std::vector<int> wall7 = { 9, 10 };
+const std::vector<int> wall8 = { 9, 11 };
+const std::vector<int> wall9 = { 9, 12 };
+const std::vector<int> wall10 = { 9, 13 };
+const std::vector<int> wall11 = { 9, 14 };
+const std::vector<int> wall12 = { 9, 15};
+const std::vector<int> wall13 = { 10, 15};
+const std::vector<int> wall14 = { 11,15};
+const std::vector<int> wall15 = { 12, 15};
+const std::vector<int> wall16 = { 13, 15};
+const std::vector<int> wall17 = { 14, 15};
+const std::vector<int> wall18 = {15, 15};
 
 
 
@@ -113,19 +113,7 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
         for (int i = 0; i < 7; ++i) {
             int newY = y + direction[i].first;
             int newX = x + direction[i].second;
-            /* 
-            if (newY >= 0 && newY < rows && newX >= 0 && newX < cols && !visited[newY][newX] && grid[newY][newX].distance != 255) {
-                int distanceToGoal = static_cast<int>(std::sqrt(std::pow(goalX - newX, 2) + std::pow(goalY - newY, 2)));
 
-                int neighborDistance = 1;  
-                int tentativeDistance = grid[y][x].distance + neighborDistance + grid[newY][newX].cost;
-
-                if (tentativeDistance < grid[newY][newX].distance || grid[newY][newX].distance == 0) {
-                    grid[newY][newX].distance = tentativeDistance;
-                    queue.push({ newY, newX });
-                }
-            }
-            */
             if (newY >= 0 && newY < rows && newX >= 0 && newX < cols && !visited[newY][newX] && grid[newY][newX].distance != 255) {
 
                 int neighborDistance = (i < 4) ? 10 : 14; 
