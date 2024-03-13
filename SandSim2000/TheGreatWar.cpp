@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <queue>
 #include <set>
+#include <unordered_set>
 #include <iostream>
 #include <memory>
 #include <cmath>
@@ -130,17 +131,39 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
 }
 
 void PropegateWaveFront(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
-    //Start at target cell
-        //List: currnet cell
-        //Check neighbour cells
-        // Add "0" distance value cells to List: next cell
-        
-            //Update next cell with distance value
-            //Check List: next cell and remove duplicates
-            //Pass next cell to current cell and update distance value
-            //Clear List: next cell
-        //Move to next in List: current cell
+    std::unordered_set<Cell> WaveFrontCellsList;
+    std::vector<Cell> NewNeighbourList;
+
+    // Initialize WaveFrontCellsList with the target cell
+    Cell targetCell = grid[endingPos[0]][endingPos[1]];
+    targetCell.distance = 1;  // Set distance of target cell to 1
+    WaveFrontCellsList.insert(targetCell);
+
+    while (!WaveFrontCellsList.empty()) {
+        // Step 1: Expand
+        for (std::unordered_set<Cell>::iterator it = WaveFrontCellsList.begin(); it != WaveFrontCellsList.end(); ) {
+            const Cell& cell = *it;
+            // Update Distance value
+            // Explore neighbors of the current WaveFrontCellsList cell
+            // If a neighbor cell's distance value is 0, add it to the NewNeighbourList
+            // Calculate the distance-from-target value for new neighbor cells by taking current cell.distance and add 1
+            // Break condition: if the source cell is reached, else all grid is visited
+
+            // Step 2: Update
+            for (const Cell& newNeighbour : NewNeighbourList) {
+                // Move all cells from NewNeighbourList to WaveFrontCellList
+                // If the cell is not already in WaveFrontCellsList, add it
+                // If the cell is already in WaveFrontCellsList, update its distance value if the new value is smaller
+            }
+
+            // After processing, remove the cell from WaveFrontCellsList
+            it = WaveFrontCellsList.erase(it);
+        }
+        NewNeighbourList.clear();
+    }
 }
+
+
 
 void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
     int goalX = endingPos[0];
