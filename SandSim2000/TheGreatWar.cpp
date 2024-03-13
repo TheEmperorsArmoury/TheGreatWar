@@ -129,6 +129,19 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
     }
 }
 
+void PropegateWaveFront(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
+    //Start at target cell
+        //List: currnet cell
+        //Check neighbour cells
+        // Add "0" distance value cells to List: next cell
+        
+            //Update next cell with distance value
+            //Check List: next cell and remove duplicates
+            //Pass next cell to current cell and update distance value
+            //Clear List: next cell
+        //Move to next in List: current cell
+}
+
 void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
     int goalX = endingPos[0];
     int goalY = endingPos[1];
@@ -228,6 +241,7 @@ void initialiseWalls(Cell grid[][cols], const std::vector<std::vector<int>>& wal
         int wallY = wall[0]; 
 
         if (wallX >= 0 && wallX < cols && wallY >= 0 && wallY < rows) {
+            grid[wallY][wallX].distance = -1;
             grid[wallY][wallX].cost = 255; 
         }
     }
