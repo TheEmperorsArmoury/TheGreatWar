@@ -1,7 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include <queue>
-#include <set>
-#include <unordered_set>
 #include <iostream>
 #include <memory>
 #include <cmath>
@@ -88,6 +86,8 @@ struct Cell {
     int cost;
 };
 
+Cell grid[rows][cols];
+
 void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
     int goalX = endingPos[0];
     int goalY = endingPos[1];
@@ -129,40 +129,110 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
         }
     }
 }
-
+/*
 void PropegateWaveFront(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
-    std::unordered_set<Cell> WaveFrontCellsList;
+    std::vector<Cell> WaveFrontCellsList;
     std::vector<Cell> NewNeighbourList;
 
     // Initialize WaveFrontCellsList with the target cell
     Cell targetCell = grid[endingPos[0]][endingPos[1]];
-    targetCell.distance = 1;  // Set distance of target cell to 1
-    WaveFrontCellsList.insert(targetCell);
+    targetCell.distance = 1;
+    WaveFrontCellsList.push_back(targetCell);
 
-    while (!WaveFrontCellsList.empty()) {
-        // Step 1: Expand
-        for (std::unordered_set<Cell>::iterator it = WaveFrontCellsList.begin(); it != WaveFrontCellsList.end(); ) {
-            const Cell& cell = *it;
-            // Update Distance value
-            // Explore neighbors of the current WaveFrontCellsList cell
-            // If a neighbor cell's distance value is 0, add it to the NewNeighbourList
-            // Calculate the distance-from-target value for new neighbor cells by taking current cell.distance and add 1
-            // Break condition: if the source cell is reached, else all grid is visited
+    // Main loop runs while there are values for both lists
+    while (!WaveFrontCellsList.empty() || !NewNeighbourList.empty()) {
 
-            // Step 2: Update
-            for (const Cell& newNeighbour : NewNeighbourList) {
-                // Move all cells from NewNeighbourList to WaveFrontCellList
-                // If the cell is not already in WaveFrontCellsList, add it
-                // If the cell is already in WaveFrontCellsList, update its distance value if the new value is smaller
+        // Second loop for WaveFrontCellsList
+        for (Cell& currentCell : WaveFrontCellsList) {
+            const std::vector<std::pair<int, int>> neighbourCoordinates = { {-1, 0}, {0, 1}, {1, 0}, {0, -1} };
+
+            // Third Loop for NewNeighbourList
+            for (Cell& newNeighbour : NewNeighbourList) {
+                int nx = currentCell.position.x + newNeighbour.position.x;
+                int ny = currentCell.position.y + newNeighbour.position.y;
+                // Check if the neighbor is within the grid boundaries
+                if (nx >= 0 && nx < rows && ny >= 0 && ny < cols) {
+                    Cell& neighborCell = grid[nx][ny];
+
+                    // If the neighbor cell's distance value is 0, add it to the NewNeighbourList
+                    if (neighborCell.distance == 0) {
+                        neighborCell.distance = currentCell.distance + 1;
+                        NewNeighbourList.push_back(neighborCell);
+                    }
+                }
             }
 
-            // After processing, remove the cell from WaveFrontCellsList
-            it = WaveFrontCellsList.erase(it);
+            // Add only unique cells from NewNeighbourList to WaveFrontCellsList
+            for (auto it = NewNeighbourList.begin(); it != NewNeighbourList.end(); ) {
+                const Cell& newNeighbour = *it;
+                bool isUnique = true; 
+                for (const Cell& existingCell : WaveFrontCellsList) {
+                    if (newNeighbour.position == existingCell.position) {
+                        isUnique = false; 
+                        break; 
+                    }
+                }
+
+                if (isUnique) {
+                    WaveFrontCellsList.push_back(newNeighbour);
+                    ++it; 
+                }
+                else {
+                    it = NewNeighbourList.erase(it); 
+                }
+            }
+            NewNeighbourList.clear();
         }
-        NewNeighbourList.clear();
+    }
+}
+*/
+
+bool CheckForUniqueNeighbouringCells(const Cell& currentNeighbour, const std::vector<Cell>& NewNeighbourList)
+{
+    for (const Cell& cell : NewNeighbourList) {
+        if (cell.distance == currentNeighbour.distance && cell.position == currentNeighbour.position) {
+            return false; 
+        }
+    }
+    return true; 
+}
+
+void CheckForNewNeighbours(const Cell& currentCell, std::vector<Cell>& NewNeighbourList) {
+    const std::vector<std::pair<int, int>> neighbourCellCoordinates = { {-1, 0}, {0, 1}, {1, 0}, {0, -1} };
+
+    for (const auto& coord : neighbourCellCoordinates) {
+        int nx = currentCell.position.x + coord.first;
+        int ny = currentCell.position.y + coord.second;
+        if (nx >= 0 && nx < rows && ny >= 0 && ny < cols) {
+
+            Cell currentNeighbour = grid[nx][ny];
+            
+            if (currentNeighbour.distance == 0)
+            {
+                bool currentNeighbourIsUnique = CheckForUniqueNeighbouringCells(currentNeighbour, NewNeighbourList);
+                if (currentNeighbourIsUnique) { 
+                    currentNeighbour.distance = currentCell.distance + 1;
+                    NewNeighbourList.push_back(currentNeighbour); 
+                }
+            }
+        }
     }
 }
 
+void PropagateWaveFront(const std::vector<int>& endingPos) {
+    std::vector<Cell> WaveFrontCellsList;
+    std::vector<Cell> NewNeighbourList;
+    
+    const Cell& currentCell = grid[8][9];
+
+    CheckForNewNeighbours(currentCell, NewNeighbourList);
+
+    for (auto&& neighbor : NewNeighbourList) {
+        WaveFrontCellsList.push_back(std::move(neighbor));
+    }
+
+    NewNeighbourList.clear();
+}
 
 
 void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
@@ -202,8 +272,10 @@ void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& end
 }
 
 void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows][cols]) {
-    GenerateDistanceMap(grid, endingPos);
-    CalculateCellRotations(grid, endingPos);
+    //GenerateDistanceMap(grid, endingPos);
+    PropagateWaveFront(endingPos);
+    //CalculateCellRotations(grid, endingPos);
+    
 }
 
 sf::Vector2f getScreenPositionFromGridCoordinate(int x, int y, int cellSize) {
@@ -323,7 +395,7 @@ int main() {
 
     initializeArrowSprite();
 
-    Cell grid[rows][cols];
+    
     initializeGrid(grid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
     initialiseWalls(grid, wallSections);
     VectorFieldPathfinding(endingPos, grid);
@@ -390,7 +462,7 @@ int main() {
     }
 
     //PrintCosts(grid, endingPos);
-    PrintDistances(grid, endingPos);
+    //PrintDistances(grid, endingPos);
     //PrintRotations(grid, endingPos);
 
     return 0;
