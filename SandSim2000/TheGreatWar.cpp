@@ -129,6 +129,7 @@ void GenerateDistanceMap(Cell(&grid)[rows][cols], const std::vector<int>& ending
         }
     }
 }
+
 /*
 void PropegateWaveFront(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
     std::vector<Cell> WaveFrontCellsList;
@@ -187,31 +188,35 @@ void PropegateWaveFront(Cell(&grid)[rows][cols], const std::vector<int>& endingP
 }
 */
 
+//Later replace with .sort and .unique
 bool CheckForUniqueNeighbouringCells(const Cell& currentNeighbour, const std::vector<Cell>& NewNeighbourList)
 {
     for (const Cell& cell : NewNeighbourList) {
-        if (cell.distance == currentNeighbour.distance && cell.position == currentNeighbour.position) {
+        if (cell.position == currentNeighbour.position) {
             return false; 
         }
     }
     return true; 
 }
 
-void CheckForNewNeighbours(const Cell& currentCell, std::vector<Cell>& NewNeighbourList) {
+void CheckForNewNeighbours(Cell& currentCell, std::vector<Cell>& NewNeighbourList) {
     const std::vector<std::pair<int, int>> neighbourCellCoordinates = { {-1, 0}, {0, 1}, {1, 0}, {0, -1} };
 
     for (const auto& coord : neighbourCellCoordinates) {
         int nx = currentCell.position.x + coord.first;
         int ny = currentCell.position.y + coord.second;
+
         if (nx >= 0 && nx < rows && ny >= 0 && ny < cols) {
 
-            Cell currentNeighbour = grid[nx][ny];
+            Cell& currentNeighbour = grid[nx][ny];
             
             if (currentNeighbour.distance == 0)
             {
+                currentNeighbour.distance = currentCell.distance + 1;
+                std::cout << "Neighbour Cell x: " << currentNeighbour.position.x << ", y: " << currentNeighbour.position.y << ", d: " << currentNeighbour.distance << std::endl;
+
                 bool currentNeighbourIsUnique = CheckForUniqueNeighbouringCells(currentNeighbour, NewNeighbourList);
                 if (currentNeighbourIsUnique) { 
-                    currentNeighbour.distance = currentCell.distance + 1;
                     NewNeighbourList.push_back(currentNeighbour); 
                 }
             }
@@ -222,18 +227,28 @@ void CheckForNewNeighbours(const Cell& currentCell, std::vector<Cell>& NewNeighb
 void PropagateWaveFront(const std::vector<int>& endingPos) {
     std::vector<Cell> WaveFrontCellsList;
     std::vector<Cell> NewNeighbourList;
-    
-    const Cell& currentCell = grid[8][9];
+    int x = endingPos[0];
+    int y = endingPos[1];
+    Cell& currentCell = grid[x][y];
+    currentCell.distance = 1;
+    WaveFrontCellsList.push_back(currentCell);
 
-    CheckForNewNeighbours(currentCell, NewNeighbourList);
+    while (!WaveFrontCellsList.empty()) {
+        for (size_t i = 0; i < WaveFrontCellsList.size(); ++i) {
+            currentCell = WaveFrontCellsList[i];
+            std::cout << "Current Cell x: " << currentCell.position.x << ", y: " << currentCell.position.y << ", d: " << currentCell.distance << std::endl;
+            CheckForNewNeighbours(currentCell, NewNeighbourList);
+        }
+        std::cout << "Wave size:" << WaveFrontCellsList.size() << std::endl;
 
-    for (auto&& neighbor : NewNeighbourList) {
-        WaveFrontCellsList.push_back(std::move(neighbor));
+        WaveFrontCellsList.clear();
+        for (auto&& neighbor : NewNeighbourList) {
+            WaveFrontCellsList.push_back(std::move(neighbor));
+        }
+        std::cout << "Neighbour size:" << NewNeighbourList.size() << std::endl;
+        NewNeighbourList.clear();       
     }
-
-    NewNeighbourList.clear();
 }
-
 
 void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) {
     int goalX = endingPos[0];
@@ -274,7 +289,7 @@ void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& end
 void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows][cols]) {
     //GenerateDistanceMap(grid, endingPos);
     PropagateWaveFront(endingPos);
-    //CalculateCellRotations(grid, endingPos);
+    CalculateCellRotations(grid, endingPos);
     
 }
 
@@ -462,7 +477,7 @@ int main() {
     }
 
     //PrintCosts(grid, endingPos);
-    //PrintDistances(grid, endingPos);
+    PrintDistances(grid, endingPos);
     //PrintRotations(grid, endingPos);
 
     return 0;
