@@ -38,6 +38,11 @@ struct QuadTree {
 };
 
 struct QuadTreeLeaf : public QuadTree {
+
+    // Josh: You'll need to change this so it can take multiple iterators. 
+    // Later we'll add more objects to the BattlefieldVector which won't all be BattlefieldCells,
+    // so better to try and open up the types of objects that the new list of iterators can point
+    // at. Probably a "template" is a good way to accomplish that. 
     std::vector<BattlefieldCell>::iterator iter;
 
     void insert(Agent* agent, int multiplier) override

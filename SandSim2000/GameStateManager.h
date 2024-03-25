@@ -14,7 +14,12 @@ class GameStateManager {
 public:
     GameStateManager(unsigned int numCells);
 
+    // Josh: You'll need to make sure that when you initialise the new quad tree, that it's leaf
+    // nodes are able to handle the new iterator list.
     void initialiseQuadTree(unsigned int battlefieldSize, unsigned int& index);
+    
+    
+    
     void initializeBattlefieldVector(unsigned int numCells);
     void placeUnit(sf::Vector2f mouseWorldPosition, std::set<std::vector<BattlefieldCell>::iterator>* gameScene, sf::String unitType);
 
