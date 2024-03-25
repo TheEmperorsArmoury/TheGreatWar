@@ -221,25 +221,6 @@ int hash(int x, int y, int cols) {
     return y * cols + x;
 }
 
-void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float cellBorderWidth, sf::Color defaultFillColor, sf::Color defaultOutlineColor) {
-    for (int y = 0; y < rows; y++) {
-        for (int x = 0; x < cols; x++) {
-            grid[y][x].position = sf::Vector2i(x, y);
-            grid[y][x].screenPosition = getScreenPositionFromGridCoordinate(x, y, cellSize);
-            grid[y][x].impassableTerrain = false;
-            grid[y][x].shape = std::make_shared<sf::RectangleShape>(cellShape);
-            grid[y][x].shape->setFillColor(defaultFillColor);
-            grid[y][x].shape->setOutlineThickness(cellBorderWidth);
-            grid[y][x].shape->setOutlineColor(defaultOutlineColor);
-            grid[y][x].shape->setPosition(x * cellSize, y * cellSize);
-            grid[y][x].distance = 0; 
-            grid[y][x].rotation = 0;
-            grid[y][x].cost = 1;
-            grid[y][x].positionHash = hash(x, y, cols);
-        }
-    }
-}
-/*
 void initializeGhostGrid(Cell ghostGrid[][cols], int rows, int cols, int cellSize, float cellBorderWidth, sf::Color defaultFillColor, sf::Color defaultOutlineColor) {
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
@@ -262,7 +243,7 @@ void initializeGhostGrid(Cell ghostGrid[][cols], int rows, int cols, int cellSiz
     }
   }
 }
-*/
+
 void initialiseWalls(Cell grid[][cols], const std::vector<std::vector<int>>& wallSections) {
     for (const std::vector<int>& wall : wallSections) {
         int wallX = wall[1]; 
