@@ -6,9 +6,11 @@
 #include <list>
 #include <tuple>
 #include <algorithm> 
+#include <unordered_set>
+
 
 const int rows = 25;
-const int cols = 25;
+const int cols = 26;
 const int border = 10;
 const int cellSize = 40;
 const int cellBorderWidth = 4;
@@ -61,10 +63,6 @@ const std::vector<int> wall21 = { 15, 11 };
 const std::vector<int> wall22 = { 15, 12 };
 
 
-
-
-
-
 std::vector<std::vector<int>> wallSections = {
   wall1, 
   wall2, 
@@ -98,9 +96,13 @@ struct Cell {
     int distance;
     int rotation;
     int cost;
+    int positionHash;
 };
 
 Cell grid[rows][cols];
+Cell ghostGrid[rows][cols];
+std::unordered_set<int> pathCells = { 0, 27, 54, 81, 108, 135, 162, 189, 216, 243, 270, 297, 324, 351, 378, 405, 432, 459, 486, 513, 540, 567, 594, 621, 648 };
+
 
 void PropagateWaveFront() {
     std::list<std::tuple<int, int, int>> nodes;
@@ -215,6 +217,10 @@ void drawArrowOnCell(sf::RenderWindow& window, const Cell& cell) {
     window.draw(arrowSprite);
 }
 
+int hash(int x, int y, int cols) {
+    return y * cols + x;
+}
+
 void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float cellBorderWidth, sf::Color defaultFillColor, sf::Color defaultOutlineColor) {
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
@@ -229,10 +235,34 @@ void initializeGrid(Cell grid[][cols], int rows, int cols, int cellSize, float c
             grid[y][x].distance = 0; 
             grid[y][x].rotation = 0;
             grid[y][x].cost = 1;
+            grid[y][x].positionHash = hash(x, y, cols);
         }
     }
 }
+/*
+void initializeGhostGrid(Cell ghostGrid[][cols], int rows, int cols, int cellSize, float cellBorderWidth, sf::Color defaultFillColor, sf::Color defaultOutlineColor) {
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            int positionHash = hash(x, y, cols);
+            if (pathCells.count(positionHash) > 0) {
 
+                ghostGrid[y][x].position = sf::Vector2i(x, y);
+                ghostGrid[y][x].screenPosition = getScreenPositionFromGridCoordinate(x, y, cellSize);
+                ghostGrid[y][x].impassableTerrain = false;
+                ghostGrid[y][x].shape = std::make_shared<sf::RectangleShape>(cellShape);
+                ghostGrid[y][x].shape->setFillColor(defaultFillColor);
+                ghostGrid[y][x].shape->setOutlineThickness(cellBorderWidth);
+                ghostGrid[y][x].shape->setOutlineColor(defaultOutlineColor);
+                ghostGrid[y][x].shape->setPosition(x * cellSize, y * cellSize);
+                ghostGrid[y][x].distance = 0;
+                ghostGrid[y][x].rotation = 0;
+                ghostGrid[y][x].cost = 1;
+                ghostGrid[y][x].positionHash = hash(x, y, cols);
+      }
+    }
+  }
+}
+*/
 void initialiseWalls(Cell grid[][cols], const std::vector<std::vector<int>>& wallSections) {
     for (const std::vector<int>& wall : wallSections) {
         int wallX = wall[1]; 
@@ -275,6 +305,19 @@ void PrintRotations(Cell(&grid)[rows][cols], const std::vector<int>& endingPos) 
     }
 }
 
+void PrintGhostHashes(Cell(&ghostGrid)[rows][cols], const std::vector<int>& endingPos) {
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < cols; ++x) {
+            std::cout << ghostGrid[y][x].positionHash << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void PrintSomething()
+{
+    std::cout << "Something" << std::endl;
+}
 
 int main() {
 
@@ -298,10 +341,12 @@ int main() {
 
     initializeArrowSprite();
 
-    
-    initializeGrid(grid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
-    initialiseWalls(grid, wallSections);
-    VectorFieldPathfinding(endingPos, grid);
+    initializeGhostGrid(ghostGrid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
+    //initializeGrid(grid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
+    //initialiseWalls(grid, wallSections);
+    //VectorFieldPathfinding(endingPos, grid);
+
+
 
     
     sf::VertexArray gridVertices(sf::Quads, rows * cols * 4); 
@@ -325,7 +370,7 @@ int main() {
             vertexIndex += 4;
         }
     }
-    
+    /*
     while (window.isOpen()) {
 
         sf::Event event;
@@ -363,10 +408,14 @@ int main() {
 
         window.display();
     }
-
+    */
     //PrintCosts(grid, endingPos);
     //PrintDistances(grid, endingPos);
     //PrintRotations(grid, endingPos);
+    PrintGhostHashes(ghostGrid, endingPos);
+    //PrintSomething();
+
+
 
     return 0;
 }
