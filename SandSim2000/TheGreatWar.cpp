@@ -37,7 +37,7 @@ void initializeArrowSprite() {
 }
 
 
-const std::vector<int> endingPos = { 12, 12 };
+const std::vector<int> startingPos = { 0,0 };
 const std::vector<int> wall1 = { 9, 10 };
 const std::vector<int> wall2 = { 10, 10 };
 const std::vector<int> wall3 = { 11, 10 };
@@ -61,6 +61,7 @@ const std::vector<int> wall19 = { 14, 10 };
 const std::vector<int> wall20 = { 15, 10 };
 const std::vector<int> wall21 = { 15, 11 };
 const std::vector<int> wall22 = { 15, 12 };
+const std::vector<int> endingPos = { 24,24 };
 
 
 std::vector<std::vector<int>> wallSections = {
@@ -180,7 +181,7 @@ void CalculateCellRotations(Cell(&grid)[rows][cols], const std::vector<int>& end
 
 void VectorFieldPathfinding(const std::vector<int>& endingPos, Cell(&grid)[rows][cols]) {
     PropagateWaveFront();
-    CalculateCellRotations(grid, endingPos);
+    CalculateCellRotations(ghostGrid, endingPos);
     
 }
 
@@ -225,23 +226,26 @@ void initializeGhostGrid(Cell ghostGrid[][cols], int rows, int cols, int cellSiz
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
             int positionHash = hash(x, y, cols);
-            if (pathCells.count(positionHash) > 0) {
 
-                ghostGrid[y][x].position = sf::Vector2i(x, y);
-                ghostGrid[y][x].screenPosition = getScreenPositionFromGridCoordinate(x, y, cellSize);
-                ghostGrid[y][x].impassableTerrain = false;
-                ghostGrid[y][x].shape = std::make_shared<sf::RectangleShape>(cellShape);
-                ghostGrid[y][x].shape->setFillColor(defaultFillColor);
-                ghostGrid[y][x].shape->setOutlineThickness(cellBorderWidth);
-                ghostGrid[y][x].shape->setOutlineColor(defaultOutlineColor);
-                ghostGrid[y][x].shape->setPosition(x * cellSize, y * cellSize);
-                ghostGrid[y][x].distance = 0;
-                ghostGrid[y][x].rotation = 0;
-                ghostGrid[y][x].cost = 1;
-                ghostGrid[y][x].positionHash = hash(x, y, cols);
-      }
+            ghostGrid[y][x].position = sf::Vector2i(x, y);
+            ghostGrid[y][x].cost = 1;
+            ghostGrid[y][x].screenPosition = getScreenPositionFromGridCoordinate(x, y, cellSize);
+            ghostGrid[y][x].impassableTerrain = false;
+            ghostGrid[y][x].shape = std::make_shared<sf::RectangleShape>(cellShape);
+            ghostGrid[y][x].shape->setOutlineThickness(cellBorderWidth);
+            ghostGrid[y][x].shape->setOutlineColor(defaultOutlineColor);
+            ghostGrid[y][x].shape->setPosition(x * cellSize, y * cellSize);
+            ghostGrid[y][x].distance = 0;
+            ghostGrid[y][x].rotation = 0;
+
+            if (pathCells.count(positionHash) > 0) {
+                ghostGrid[y][x].positionHash = positionHash;
+            }
+            else {
+                ghostGrid[y][x].positionHash = -1;
+            }
+        }
     }
-  }
 }
 
 void initialiseWalls(Cell grid[][cols], const std::vector<std::vector<int>>& wallSections) {
@@ -325,7 +329,7 @@ int main() {
     initializeGhostGrid(ghostGrid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
     //initializeGrid(grid, rows, cols, cellSize, cellBorderWidth, sf::Color::White, sf::Color(100, 100, 100));
     //initialiseWalls(grid, wallSections);
-    //VectorFieldPathfinding(endingPos, grid);
+    VectorFieldPathfinding(endingPos, ghostGrid);
 
 
 
@@ -335,23 +339,34 @@ int main() {
     int vertexIndex = 0;
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
-            Cell currentCell = grid[y][x];
+            Cell currentCell = ghostGrid[y][x];
             sf::Vector2f position = currentCell.screenPosition;
 
+            sf::Color cellColor;
+
+            if (pathCells.count(currentCell.positionHash) > 0) {
+                cellColor = sf::Color(255, 255, 255);
+            }
+            else {
+                cellColor = sf::Color(150, 150, 150);
+            }
+
+            // Set positions (unchanged)
             gridVertices[vertexIndex + 0].position = position;
             gridVertices[vertexIndex + 1].position = position + sf::Vector2f(cellSize, 0);
             gridVertices[vertexIndex + 2].position = position + sf::Vector2f(cellSize, cellSize);
             gridVertices[vertexIndex + 3].position = position + sf::Vector2f(0, cellSize);
 
-            gridVertices[vertexIndex + 0].color = sf::Color::White;
-            gridVertices[vertexIndex + 1].color = sf::Color::White;
-            gridVertices[vertexIndex + 2].color = sf::Color::White;
-            gridVertices[vertexIndex + 3].color = sf::Color::White;
+            // Set colors based on pathCells
+            gridVertices[vertexIndex + 0].color = cellColor;
+            gridVertices[vertexIndex + 1].color = cellColor;
+            gridVertices[vertexIndex + 2].color = cellColor;
+            gridVertices[vertexIndex + 3].color = cellColor;
 
             vertexIndex += 4;
         }
     }
-    /*
+    
     while (window.isOpen()) {
 
         sf::Event event;
@@ -371,32 +386,36 @@ int main() {
        
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
-                Cell currentCell = grid[y][x];
-                cell.setPosition(currentCell.screenPosition);
-                window.draw(cell);
-                drawArrowOnCell(window, currentCell);
+                Cell currentCell = ghostGrid[y][x];
+                int positionHash = currentCell.positionHash;
 
-                if (grid[y][x].cost == 255) {
+                if (pathCells.count(positionHash) > 0) {
+                    cell.setPosition(currentCell.screenPosition);
+                    window.draw(cell);
+
+                    drawArrowOnCell(window, currentCell);
+                }
+
+                if (currentCell.cost == 255) {
                     wallSquare.setPosition(getScreenPositionFromGridCoordinate(x, y, cellSize));
                     window.draw(wallSquare);
                 }
             }
         }
+       
         sf::Vector2f endSquarePosition = getScreenPositionFromGridCoordinate(endingPos[0], endingPos[1], cellSize);
         endSquare.setPosition(endSquarePosition);
         window.draw(endSquare);
+          
         
 
         window.display();
     }
-    */
-    //PrintCosts(grid, endingPos);
-    //PrintDistances(grid, endingPos);
+    
+    //PrintCosts(ghostGrid, endingPos);
+    PrintDistances(grid, endingPos);
     //PrintRotations(grid, endingPos);
-    PrintGhostHashes(ghostGrid, endingPos);
-    //PrintSomething();
-
-
+    //PrintGhostHashes(ghostGrid, endingPos);
 
     return 0;
 }
